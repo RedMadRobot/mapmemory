@@ -87,7 +87,7 @@ It adds accessors for RxJava types:
 | `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
 
 `ReactiveMap` works similar to `MutableMap` but enables you to observe data in reactive manner.
-It has methods `getLive(key)` and `getAllLive()` to observe one or all map values accordingly.
+It has methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
 
 With reactive in-memory cache you will always have actual data.
 Also you can separate subscription to data and request of data to manage it easier.
@@ -97,7 +97,7 @@ class CardsRepository(memory: MapMemory) {
     private val cardsCache: ReactiveCache<Card> by memory.reactiveCache()
 
     /** Returns observable for cards in cache. */
-    fun getCardsLive(): Observable<List<Card>> = cardsCache.getAllLive()
+    fun getCardsStream(): Observable<List<Card>> = cardsCache.getAllStream()
 
     /** Updates cards in cache. */
     fun fetchCards(): Completable {
@@ -111,7 +111,7 @@ class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
 
     init {
         // Subscribe to cache
-        repository.getCardsLive()
+        repository.getCardsStream()
             .subscribe {/* update cards on screen */}
     }
 

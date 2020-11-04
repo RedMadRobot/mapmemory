@@ -16,7 +16,7 @@ import kotlin.properties.ReadWriteProperty
  * If you don't want reactive access, use [map].
  *
  * For synchronized access, use [set], [get] and [getAll].
- * For reactive access use [getLive] and [getAllLive].
+ * For reactive access use [getStream] and [getAllStream].
  *
  * Elements in ReactiveMap are stored in the order they were added.
  * @see reactiveMap
@@ -39,7 +39,7 @@ public class ReactiveMap<T : Any> internal constructor(strategy: ReplayStrategy)
      * Returns an [Observable] for the value corresponding to the given [key] or `Observable.empty()`
      * if such a key is not present in the map or is `null`.
      */
-    public fun getLive(key: String): Observable<T> {
+    public fun getStream(key: String): Observable<T> {
         return subject.flatMap { map ->
             val entity = map[key]
             if (entity != null) Observable.just(entity) else Observable.empty()
@@ -51,7 +51,7 @@ public class ReactiveMap<T : Any> internal constructor(strategy: ReplayStrategy)
     public fun getAll(): List<T> = internalMap.values.toList()
 
     /** Returns an [Observable] for a [List] of all values in this map. */
-    public fun getAllLive(): Observable<List<T>> = subject.map { it.values.toList() }
+    public fun getAllStream(): Observable<List<T>> = subject.map { it.values.toList() }
 
     /** Associates the specified [value] with the specified [key] in the map. */
     public operator fun set(key: String, value: T) {
