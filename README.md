@@ -22,15 +22,9 @@ Simple in-memory cache conception built on `Map`.
 ## Installation
 
 Add the dependency:
-```groovy
+```kotlin
 repositories {
-    maven {
-        url("https://nexus.redmadrobot.com/repository/android/")
-        credentials {
-            username = "android-consumer"
-            password = "**************"
-        }
-    }
+    jcenter()
 }
 
 dependencies {
