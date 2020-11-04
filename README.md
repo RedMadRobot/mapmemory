@@ -137,9 +137,11 @@ May be useful to create memory scopes.
 You can use it to control data lifetime.
 ```kotlin
 /** Memory, available during a session and cleared on logout. */
+@Singleton
 class SessionMemory @Inject constructor() : MapMemory()
 
 /** Memory, available during the app lifetime. */
+@Singleton
 class AppMemory @Inject constructor() : MapMemory()
 ```
 Keep in mind that you should manually clear `SessionMemory` on logout.
