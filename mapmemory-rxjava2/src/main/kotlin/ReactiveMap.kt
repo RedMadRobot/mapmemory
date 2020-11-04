@@ -1,3 +1,6 @@
+// Public API
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.redmadrobot.mapmemory
 
 import com.redmadrobot.mapmemory.internal.getOrPutProperty
@@ -119,7 +122,7 @@ public class ReactiveMap<T : Any> internal constructor(strategy: ReplayStrategy)
  * if there is no corresponding value in memory.
  */
 public fun <T : Any> MapMemory.reactiveMap(
-    strategy: ReactiveMap.ReplayStrategy = ReactiveMap.ReplayStrategy.REPLAY_LAST
+    strategy: ReactiveMap.ReplayStrategy = ReactiveMap.ReplayStrategy.REPLAY_LAST,
 ): ReadWriteProperty<Any?, ReactiveMap<T>> {
-    return getOrPutProperty { ReactiveMap<T>(strategy) }
+    return getOrPutProperty { ReactiveMap(strategy) }
 }

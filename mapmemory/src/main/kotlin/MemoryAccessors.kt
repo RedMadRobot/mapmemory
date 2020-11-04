@@ -40,5 +40,5 @@ public fun <K, V> MapMemory.map(): ReadWriteProperty<Any?, MutableMap<K, V>> {
  * The delegate returns (and stores) empty list if there is no corresponding value in memory.
  */
 public fun <T> MapMemory.list(): ReadWriteProperty<Any?, MutableList<T>> {
-    return getOrPutProperty { mutableListOf<T>() }
+    return getOrPutProperty { mutableListOf() }
 }

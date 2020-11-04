@@ -14,7 +14,7 @@ import kotlin.properties.ReadWriteProperty
  * The delegate returns (and stores) new subject if there is no corresponding value in memory.
  */
 public fun <T : Any> MapMemory.behaviorSubject(): ReadWriteProperty<Any?, BehaviorSubject<T>> {
-    return getOrPutProperty { BehaviorSubject.create<T>() }
+    return getOrPutProperty { BehaviorSubject.create() }
 }
 
 /**
@@ -22,7 +22,7 @@ public fun <T : Any> MapMemory.behaviorSubject(): ReadWriteProperty<Any?, Behavi
  * The delegate returns (and stores) new subject if there is no corresponding value in memory.
  */
 public fun <T : Any> MapMemory.publishSubject(): ReadWriteProperty<Any?, PublishSubject<T>> {
-    return getOrPutProperty { PublishSubject.create<T>() }
+    return getOrPutProperty { PublishSubject.create() }
 }
 
 /**
@@ -30,5 +30,5 @@ public fun <T : Any> MapMemory.publishSubject(): ReadWriteProperty<Any?, Publish
  * The delegate returns (and stores) `Maybe.empty()` if there is no corresponding value in memory.
  */
 public fun <T : Any> MapMemory.maybe(): ReadWriteProperty<Any?, Maybe<T>> {
-    return getOrPutProperty { Maybe.empty<T>() }
+    return getOrPutProperty { Maybe.empty() }
 }
