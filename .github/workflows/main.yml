@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    name: Check and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Run Check
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: detektAll check
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+
+      - name: Publish
+        uses: eskatos/gradle-command-action@v1
+        if: github.ref == 'refs/heads/main' && success()
+        with:
+          arguments: publish
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+        env:
+          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_githubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
