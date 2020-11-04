@@ -1,9 +1,5 @@
----
-title: mapmemory
----
-
-# MapMemory <GitLab path="android-research/knowledge/tree/master/libs/mapmemory"/>
-[![License](https://img.shields.io/badge/license-MIT-green)][license]
+# MapMemory <GitHub path="RedMadRobot/mapmemory"/>
+[![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
 
@@ -19,6 +15,7 @@ Simple in-memory cache conception built on `Map`.
   - [Memory Scopes](#memory-scopes)
   - [Avoid `ClassCastException`](#avoid-classcastexception)
 - [Contributing](#contributing)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -178,5 +175,9 @@ println(memory["values"]) // [A, 1]
 Merge requests are welcome.
 For major changes, please open an issue first to discuss what you would like to change.
 
+## License
+
+[MIT][license]
+
 [qualifiers]: https://dagger.dev/dev-guide/#qualifiers
-[license]: https://git.redmadrobot.com/android-research/knowledge/blob/master/LICENSE
+[license]: LICENSE
