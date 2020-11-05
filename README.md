@@ -227,5 +227,7 @@ For major changes, please open an issue first to discuss what you would like to 
 
 [MIT][license]
 
+[bintray]: https://bintray.com/redmadrobot-opensource/android/mapmemory
+[ci]: https://github.com/RedMadRobot/mapmemory/actions
 [qualifiers]: https://dagger.dev/dev-guide/#qualifiers
 [license]: LICENSE
