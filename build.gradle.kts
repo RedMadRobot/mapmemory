@@ -14,7 +14,7 @@ plugins {
 
 subprojects {
     group = "com.redmadrobot.mapmemory"
-    version = "1.0"
+    version = "1.1-SNAPSHOT"
 
     apply(plugin = "maven-publish")
 
