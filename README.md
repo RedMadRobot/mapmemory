@@ -29,8 +29,9 @@ repositories {
 
 dependencies {
     implementation("com.redmadrobot.mapmemory:mapmemory:1.0")
-    // or if you want to work with memory in reactive style
+    // or if you want to work with memory in reactive style, add one of
     implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:1.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:1.0")
 }
 ```
 
@@ -75,9 +76,20 @@ Be careful, there no default values, and you will get `NoSuchElementException` i
 
 ### Reactive Style
 
-To use `MapMemory` in reactive style, add replace dependency `mapmemory` with `mapmemory-rxjava2`.
+To use `MapMemory` in reactive style, replace dependency `mapmemory` with `mapmemory-rxjava2` or `mapmemory-coroutines`.
 
-It adds accessors for RxJava types:
+> You can't use both map `mapmemory-rxjava2` and `mapmemory-coroutines` at the same time because you will get duplicates in classpath.
+
+Both of reactive implementations contain `RactiveMap`.
+`ReactiveMap` works similar to `MutableMap` but enables you to observe data in reactive manner.
+It has methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
+
+With reactive in-memory cache you will always have actual data on screen.
+Also, you can separate **subscription** to data and **request** of data to manage it easier.
+
+### RxJava 2
+
+`mapmemory-rxjava2` adds accessors for RxJava types:
 
 | Accessor            | Default value   | Description                         |
 |---------------------|-----------------|-------------------------------------|
@@ -86,11 +98,7 @@ It adds accessors for RxJava types:
 | `maybe()`           | `Maybe.empty()` | Reactive analog to store "nullable" |
 | `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
 
-`ReactiveMap` works similar to `MutableMap` but enables you to observe data in reactive manner.
-It has methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
-
-With reactive in-memory cache you will always have actual data.
-Also you can separate subscription to data and request of data to manage it easier.
+Example of cache-first approach with reactive subscription:
 ```kotlin
 class CardsRepository(memory: MapMemory) {
 
@@ -121,6 +129,50 @@ class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
                 {/* success! hide progress */},
                 {/* fail. hide progress and show error */}
             )
+    }
+}
+```
+
+### Coroutines
+
+`mapmemory-coroutines` adds accessors for coroutines types:
+
+| Accessor            | Default value                           | Description                         |
+|---------------------|-----------------------------------------|-------------------------------------|
+| `stateFlow()`       | StateFlow with specified `initialValue` | Store stream of values              |
+| `sharedFlow()`      | Empty flow                              | Store stream of values              |
+| `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
+
+Example of cache-first approach with reactive subscription:
+```kotlin
+class CardsRepository(private val api: CardsApi, memory: MapMemory) {
+
+    private val cardsCache: ReactiveCache<Card> by memory.reactiveCache()
+
+    /** Returns flow for cards in cache. */
+    fun getCardsStream(): Flow<List<Card>> = cardsCache.getAllStream()
+
+    /** Updates cards in cache. */
+    suspend fun fetchCards() {
+        val cards = api.getCards()
+        cardsCache.replaceAll(cards.associateBy { it.id })
+    }
+}
+
+class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
+
+    init {
+        // Subscribe to cache
+        repository.getCardsStream()
+            .onEach {/* update cards on screen */}
+            .launchIn(viewModelScope)
+    }
+
+    fun onRefresh() {
+        viewModelScope.launch {
+            repository.fetchCards()
+            // success! hide progress
+        }
     }
 }
 ```
