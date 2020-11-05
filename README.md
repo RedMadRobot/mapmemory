@@ -1,5 +1,5 @@
-# MapMemory <GitHub path="RedMadRobot/mapmemory"/>
-[![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
+# MapMemory <GitHub path="RedMadRobot/mapmemory"/>  
+[![Version](https://img.shields.io/bintray/v/redmadrobot-opensource/android/mapmemory?style=flat-square)][bintray] [![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci] [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
 
