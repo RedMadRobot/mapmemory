@@ -66,7 +66,7 @@ There are default accessors available:
 | `map()`      | Empty map     | Store values in map   |
 | `list()`     | Empty list    | Store values in list  |
 
-You can create own accessor if need.
+You can create own accessor if needed.
 
 You, also, can use delegate without any functions:
 ```kotlin
@@ -102,7 +102,7 @@ Example of cache-first approach with reactive subscription:
 ```kotlin
 class CardsRepository(memory: MapMemory) {
 
-    private val cardsCache: ReactiveCache<Card> by memory.reactiveCache()
+    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
 
     /** Returns observable for cards in cache. */
     fun getCardsStream(): Observable<List<Card>> = cardsCache.getAllStream()
@@ -147,7 +147,7 @@ Example of cache-first approach with reactive subscription:
 ```kotlin
 class CardsRepository(private val api: CardsApi, memory: MapMemory) {
 
-    private val cardsCache: ReactiveCache<Card> by memory.reactiveCache()
+    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
 
     /** Returns flow for cards in cache. */
     fun getCardsStream(): Flow<List<Card>> = cardsCache.getAllStream()
