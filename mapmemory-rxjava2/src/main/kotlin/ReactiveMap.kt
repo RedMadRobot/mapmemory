@@ -35,6 +35,10 @@ public class ReactiveMap<T : Any> internal constructor(strategy: ReplayStrategy)
     @Synchronized
     public operator fun get(key: String): T? = internalMap[key]
 
+    /** Returns the value for the given [key] or throws an exception if there no such key in the map. */
+    @Synchronized
+    public fun getValue(key: String): T = internalMap.getValue(key)
+
     /**
      * Returns an [Observable] for the value corresponding to the given [key] or `Observable.empty()`
      * if such a key is not present in the map or is `null`.
