@@ -4,13 +4,11 @@ import com.redmadrobot.build.extension.isSnapshotVersion
 import com.redmadrobot.build.extension.rmrBintray
 
 plugins {
-    val infrastructureVersion = "0.3"
-    id("redmadrobot.kotlin-library") version infrastructureVersion apply false
-    id("redmadrobot.publish") version infrastructureVersion apply false
-
-    id("redmadrobot.detekt") version infrastructureVersion
+    id("redmadrobot.root-project") version "0.6"
     `maven-publish`
 }
+
+apply(plugin = "redmadrobot.detekt")
 
 subprojects {
     group = "com.redmadrobot.mapmemory"
