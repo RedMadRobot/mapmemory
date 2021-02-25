@@ -24,7 +24,7 @@ Simple in-memory cache conception built on `Map`.
 Add the dependency:
 ```kotlin
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
