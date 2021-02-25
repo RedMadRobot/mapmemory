@@ -17,7 +17,7 @@ import kotlin.properties.ReadWriteProperty
  * @see reactiveMap
  */
 @Suppress("TooManyFunctions")
-public class ReactiveMap<T> internal constructor() {
+public class ReactiveMap<T> {
 
     private val internalMap = mutableMapOf<String, T>()
     private val flow = MutableStateFlow(internalMap.toMap())

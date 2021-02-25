@@ -22,7 +22,7 @@ import kotlin.properties.ReadWriteProperty
  * @see reactiveMap
  */
 @Suppress("TooManyFunctions")
-public class ReactiveMap<T : Any> internal constructor(strategy: ReplayStrategy) {
+public class ReactiveMap<T : Any>(strategy: ReplayStrategy = ReplayStrategy.REPLAY_LAST) {
 
     private val internalMap = mutableMapOf<String, T>()
     private val subject: Subject<Map<String, T>> = when (strategy) {

@@ -4,8 +4,13 @@
 
 - Method `ReactiveMap.getValue` ([fd00614])
 
+### Changed
+
+- ReactiveMap constructor now is public (#4)
+
 ### Housekeeping
 
+- Updated Kotlin to 1.4.30
 - Updated Gradle to 6.8
 - Updated Detekt to 1.15.0
 
