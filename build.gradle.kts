@@ -1,15 +1,34 @@
-import com.redmadrobot.build.extension.credentialsExist
-import com.redmadrobot.build.extension.githubPackages
-import com.redmadrobot.build.extension.isSnapshotVersion
-import com.redmadrobot.build.extension.rmrBintray
+import com.redmadrobot.build.extension.*
 
 plugins {
-    id("redmadrobot.root-project") version "0.6"
+    id("redmadrobot.root-project") version "0.8"
     id("com.github.ben-manes.versions") version "0.36.0"
     `maven-publish`
 }
 
 apply(plugin = "redmadrobot.detekt")
+
+redmadrobot {
+    publishing {
+        signArtifacts = !isRunningOnCi
+
+        pom {
+            setGitHubProject("RedMadRobot/mapmemory")
+
+            licenses {
+                mit()
+            }
+
+            developers {
+                developer(id = "osipxd", name = "Osip Fatkullin", email = "o.fatkullin@redmadrobot.com")
+            }
+        }
+    }
+}
+
+repositories {
+    jcenter() // TODO: Remove when detekt-formatting plugin will be published to Maven Central
+}
 
 subprojects {
     group = "com.redmadrobot.mapmemory"
@@ -19,8 +38,8 @@ subprojects {
 
     publishing {
         repositories {
-            githubPackages("RedMadRobot/mapmemory")
-            if (!isSnapshotVersion && credentialsExist("bintray")) rmrBintray(project.name)
+            if (isRunningOnCi) githubPackages("RedMadRobot/mapmemory")
+            if (isReleaseVersion && credentialsExist("ossrh")) ossrh()
         }
     }
 }
