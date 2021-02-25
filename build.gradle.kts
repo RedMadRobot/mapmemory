@@ -32,7 +32,7 @@ repositories {
 
 subprojects {
     group = "com.redmadrobot.mapmemory"
-    version = "1.1"
+    version = "1.2-SNAPSHOT"
 
     apply(plugin = "maven-publish")
 
