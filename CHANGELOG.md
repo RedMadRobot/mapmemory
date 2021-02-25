@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.1] (2021-02-26)
+
 ### Added
 
 - Method `ReactiveMap.getValue` (#2)
@@ -19,4 +21,5 @@
 
 Public release
 
-[Unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v1.0...main
+[unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v1.1...main
+[1.1]: https://github.com/RedMadRobot/mapmemory/compare/v1.0...v1.1

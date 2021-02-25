@@ -1,5 +1,5 @@
 # MapMemory <GitHub path="RedMadRobot/mapmemory"/>  
-[![Version](https://img.shields.io/bintray/v/redmadrobot-opensource/android/mapmemory?style=flat-square)][bintray] [![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci] [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
+[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral] [![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci] [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
 
@@ -28,10 +28,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.redmadrobot.mapmemory:mapmemory:1.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory:1.1")
     // or if you want to work with memory in reactive style, add one of
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:1.0")
-    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:1.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:1.1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:1.1")
 }
 ```
 
@@ -227,7 +227,7 @@ For major changes, please open an issue first to discuss what you would like to 
 
 [MIT][license]
 
-[bintray]: https://bintray.com/redmadrobot-opensource/android/mapmemory
+[mavenCentral]: https://search.maven.org/search?q=g:com.redmadrobot.mapmemory
 [ci]: https://github.com/RedMadRobot/mapmemory/actions
 [qualifiers]: https://dagger.dev/dev-guide/#qualifiers
 [license]: LICENSE
