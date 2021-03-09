@@ -32,8 +32,8 @@ import kotlin.reflect.KProperty
 public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
 
     public inline operator fun <reified V : Any> invoke(
-        crossinline defaultValue: (key: String) -> V
-    ): ReadWriteProperty<Any?, V> = getOrPutProperty(defaultValue)
+        crossinline defaultValue: () -> V,
+    ): MapMemoryProperty<V> = getOrPutProperty(defaultValue)
 
     public inline operator fun <reified V> getValue(thisRef: Any?, property: KProperty<*>): V {
         return getWithNullabilityInference(keyOf(thisRef, property))
@@ -43,4 +43,15 @@ public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
     public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         putNotNull(keyOf(thisRef, property), value)
     }
+}
+
+/** Delegate for memory properties. */
+public abstract class MapMemoryProperty<V> @PublishedApi internal constructor() : ReadWriteProperty<Any?, V> {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): V = getValue(keyOf(thisRef, property))
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
+        setValue(keyOf(thisRef, property), value)
+    }
+
+    internal abstract fun getValue(key: String): V
+    internal abstract fun setValue(key: String, value: V)
 }
