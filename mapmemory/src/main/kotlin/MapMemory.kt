@@ -1,5 +1,8 @@
 package com.redmadrobot.mapmemory
 
+import com.redmadrobot.mapmemory.internal.getWithNullabilityInference
+import com.redmadrobot.mapmemory.internal.keyOf
+import com.redmadrobot.mapmemory.internal.putNotNull
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -23,4 +26,13 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * Memory should be singleton and can be cleared when need.
  */
-public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap()
+public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
+
+    public inline operator fun <reified V> getValue(thisRef: Any?, property: KProperty<*>): V {
+        return getWithNullabilityInference(keyOf(thisRef, property))
+    }
+
+    public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
+        putNotNull(keyOf(thisRef, property), value)
+    }
+}
