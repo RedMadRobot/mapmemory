@@ -1,9 +1,12 @@
 package com.redmadrobot.mapmemory
 
+import com.redmadrobot.mapmemory.internal.getOrPutProperty
 import com.redmadrobot.mapmemory.internal.getWithNullabilityInference
 import com.redmadrobot.mapmemory.internal.keyOf
 import com.redmadrobot.mapmemory.internal.putNotNull
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * Memory implemented via [ConcurrentHashMap].
@@ -28,10 +31,15 @@ import java.util.concurrent.ConcurrentHashMap
  */
 public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
 
+    public inline operator fun <reified V : Any> invoke(
+        crossinline defaultValue: (key: String) -> V
+    ): ReadWriteProperty<Any?, V> = getOrPutProperty(defaultValue)
+
     public inline operator fun <reified V> getValue(thisRef: Any?, property: KProperty<*>): V {
         return getWithNullabilityInference(keyOf(thisRef, property))
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         putNotNull(keyOf(thisRef, property), value)
     }
