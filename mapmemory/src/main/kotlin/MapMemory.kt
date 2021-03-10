@@ -43,6 +43,23 @@ public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
     public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         putNotNull(keyOf(thisRef, property), value)
     }
+
+    /**
+     * Kotlin's [withDefault][kotlin.collections.withDefault] is not compatible with MapMemory
+     * so it is banned from use.
+     * Use operator [invoke] when you want to put default value to memory if there no value
+     * corresponding to the property key.
+     * @see invoke
+     */
+    @Deprecated(
+        level = DeprecationLevel.ERROR,
+        message = "Use operator 'invoke' to get memory property with default value",
+        replaceWith = ReplaceWith("this(defaultValue)"),
+    )
+    @Suppress("UNUSED_PARAMETER")
+    public fun <V> withDefault(defaultValue: (key: String) -> V): MutableMap<String, V> {
+        throw UnsupportedOperationException("Should not be called")
+    }
 }
 
 /** Delegate for memory properties. */
