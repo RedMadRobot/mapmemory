@@ -31,6 +31,9 @@ import kotlin.reflect.KProperty
  */
 public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
 
+    /** Extension point. Gives ability to create extensions on companion. */
+    public companion object;
+
     public inline operator fun <reified V : Any> invoke(
         crossinline defaultValue: () -> V,
     ): MapMemoryProperty<V> = getOrPutProperty(defaultValue)
