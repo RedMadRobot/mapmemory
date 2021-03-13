@@ -3,13 +3,11 @@
 
 package com.redmadrobot.mapmemory
 
-import com.redmadrobot.mapmemory.internal.getOrPutProperty
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
-import kotlin.properties.ReadWriteProperty
 
 /**
  * Key/value storage of entities with type [T], which able to be accessed in reactive style.
@@ -127,6 +125,6 @@ public class ReactiveMap<T : Any>(strategy: ReplayStrategy = ReplayStrategy.REPL
  */
 public fun <T : Any> MapMemory.reactiveMap(
     strategy: ReactiveMap.ReplayStrategy = ReactiveMap.ReplayStrategy.REPLAY_LAST,
-): ReadWriteProperty<Any?, ReactiveMap<T>> {
-    return getOrPutProperty { ReactiveMap(strategy) }
+): MapMemoryProperty<ReactiveMap<T>> {
+    return invoke { ReactiveMap(strategy) }
 }
