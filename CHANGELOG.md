@@ -80,6 +80,7 @@ You should use `mutableMap` and `mutableList` for mutable versions of collection
   Now you can initialize memory with specified content on creation.
 - New module `mapmemory-test`.
   Contains utilities helping to test code that uses `MapMemory`.
+- New module `mapmemory-rxjava3` with accessors for RxJava3.
 
 ### Changed
 
