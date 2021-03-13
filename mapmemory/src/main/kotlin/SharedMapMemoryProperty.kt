@@ -4,6 +4,12 @@ import com.redmadrobot.mapmemory.internal.getWithNullabilityInference
 import com.redmadrobot.mapmemory.internal.putNotNull
 import kotlin.reflect.KProperty
 
+/**
+ * Returns property delegate to access shared value in memory associated with the given [key].
+ * ```
+ * var host: String by memory.shared("selectedServer")
+ * ```
+ */
 public inline fun <reified T> MapMemory.shared(key: String): MapMemoryProperty<T> {
     return object : MapMemoryProperty<T>() {
         override fun getValue(key: String): T = getWithNullabilityInference(key)
@@ -11,6 +17,12 @@ public inline fun <reified T> MapMemory.shared(key: String): MapMemoryProperty<T
     }.shared(key)
 }
 
+/**
+ * Makes property delegate shared to access value in memory associated with the given [key].
+ * ```
+ * var answer: Int by memory { 42 }.shared("ultimateAnswer")
+ * ```
+ */
 public fun <V> MapMemoryProperty<V>.shared(key: String): MapMemoryProperty<V> {
     return if (this is SharedMapMemoryProperty) {
         property.shared(key)

@@ -10,31 +10,44 @@ import kotlin.reflect.KProperty
 
 /**
  * Memory implemented via [ConcurrentHashMap].
- *
  * Memory responsibility is to hold data.
  * MapMemory is conception of memory built on top of [MutableMap].
  *
- * Values in memory can be accessed with delegates:
+ * ### Access to memory values
+ *
+ * Memory values can be accessed via delegates:
  * ```
- *  class CardsInMemoryStorage(memory: MapMemory) {
+ * package com.example
  *
- *      private val cards: MutableMap<String, Card> by memory.map()
+ * class TokenStorage(memory: MapMemory) {
+ *     var authToken: String by memory // Used delegate for field declaration
+ * }
  *
- *      operator fun get(id: String): Card? = cards[id]
- *      operator fun set(id: String, card: Card) {
- *          cards[id] = card
- *      }
- *  }
+ * val memory = MapMemory()
+ * val storage = TokenStorage(memory)
+ * storage.authToken = "[TOKEN_HERE]"
+ * println(memory) // {com.example.TokenStorage#authToken: [TOKEN_HERE]}
+ * ```
+ * There are a number of delegates to store collections in memory: [map], [list]
+ *
+ * You can specify default value using operator [invoke].
+ * Default value will used if you're trying to read property before it was written.
+ * ```
+ * var counter: Int by memory { 0 }
  * ```
  *
- * Memory should be singleton and can be cleared when need.
+ * ### Scoped and shared values
+ *
+ * Delegate accesses memory values by key retrieved from property name.
+ * There are two types of property delegates:
+ * - **Scoped** to class where the property is declared.
+ *   Property key is combination of class and property name: `com.example.TokenStorage#authToken`
+ * - **Shared** between all classes by the specified key.
+ *   All properties are scoped by default, you can share it with function [shared].
  */
 public open class MapMemory private constructor(
     map: ConcurrentHashMap<String, Any>,
 ) : MutableMap<String, Any> by map {
-
-    /** Extension point. Gives ability to create extensions on companion. */
-    public companion object;
 
     /** Creates a new empty [MapMemory]. */
     public constructor() : this(ConcurrentHashMap())
@@ -42,14 +55,41 @@ public open class MapMemory private constructor(
     /** Creates a new [MapMemory] with the content from the given [map]. */
     public constructor(map: Map<String, Any>) : this(ConcurrentHashMap(map))
 
+    /**
+     * Returns property delegate that will initialize memory record with the value
+     * provided by [defaultValue] if it is not initialized yet.
+     * ```
+     * var counter: Int by memory { 0 }
+     * ```
+     */
     public inline operator fun <reified V : Any> invoke(
         crossinline defaultValue: () -> V,
     ): MapMemoryProperty<V> = getOrPutProperty(defaultValue)
 
+    /**
+     * Returns the value of the property for the given object from this memory map.
+     * If property is not found in the memory and there no default value provided (see [invoke]):
+     * - returns `null` if [V] is nullable,
+     * - throws [NoSuchElementException] if [V] is non-nullable.
+     *
+     * @param thisRef the object for which the value is requested, used to get scoped property key.
+     * @param property the metadata for the property, used to get the name of property and lookup
+     * the value corresponding to this name in the memory.
+     * @return the property value.
+     */
     public inline operator fun <reified V> getValue(thisRef: Any?, property: KProperty<*>): V {
         return getWithNullabilityInference(keyOf(thisRef, property))
     }
 
+    /**
+     * Stores the value of the property for the given object in this memory map.
+     * Removes value corresponding to the key if the provided [value] is `null`.
+     *
+     * @param thisRef the object for which the value is requested, used to get scoped property key.
+     * @param property the metadata for the property, used to get the name of property and lookup
+     * the value corresponding to this name in the memory.
+     * @param value the value to set.
+     */
     @Suppress("NOTHING_TO_INLINE")
     public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         putNotNull(keyOf(thisRef, property), value)
@@ -71,6 +111,9 @@ public open class MapMemory private constructor(
     public fun <V> withDefault(defaultValue: (key: String) -> V): MutableMap<String, V> {
         throw UnsupportedOperationException("Should not be called")
     }
+
+    /** Extension point. Gives ability to create extensions on companion. */
+    public companion object;
 }
 
 /** Delegate for memory properties. */
