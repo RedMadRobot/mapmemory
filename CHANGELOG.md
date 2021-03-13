@@ -1,5 +1,58 @@
 ## [Unreleased]
 
+### Scoped and shared fields
+
+Now there are two types of memory fields: scoped (to class) and shared.
+
+All memory fields by default are scoped to the class where it's declared.
+Scoping prevents from unintended sharing of properties with the same name between classes.
+This snippet demonstrates the problem:
+
+```kotlin
+package com.example
+
+class StringsStorage(memory: MapMemory) {
+    var values: MutableList<String> by memory.list()
+}
+
+class IntsStorage(memory: MapMemory) {
+    var values: MutableList<Int> by memory.list() // The same field name as in StringsStorage
+}
+
+val strings = StringsStorage(memory)
+val ints = IntsStorage(memory)
+
+strings.values.add("A")
+ints.values.add(1)
+
+println(memory) 
+```
+
+Output:
+
+```
+For unscoped fields (old behaviour):
+{values: [A, 1]}
+
+For scoped fields (new behavior):
+{com.example.StringsStorage#values: [A], com.example.IntsStorage#values: [1]}
+```
+
+You can make memory field **shared** using extension `shared(key: String)`:
+
+```kotlin
+// It is recommended to create constants for shared properties keys
+const val KEY_SERVER_HOST = "serverHost"
+
+class ServerConfig(memory: MapMemory) {
+    var host: String by memory.shared(KEY_SERVER_HOST)
+}
+
+class DebugPanelConfig(memory: MapMemory) {
+    var serverHost: String by memory.shared(KEY_SERVER_HOST)
+}
+```
+
 ### Added
 
 - Copying constructor for `MapMemory`.
