@@ -21,17 +21,22 @@ Simple in-memory cache conception built on `Map`.
 
 ## Installation
 
-Add the dependency:
+Add dependencies:
 ```kotlin
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.redmadrobot.mapmemory:mapmemory:1.1")
+    implementation("com.redmadrobot.mapmemory:mapmemory:2.0-rc1")
+
     // or if you want to work with memory in reactive style, add one of
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:1.1")
-    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:1.1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0-rc1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0-rc1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0-rc1")
+    
+    // if you want to test code that uses MapMemory
+    testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0-rc1")
 }
 ```
 
@@ -89,9 +94,9 @@ It has methods `getStream(key)` and `getAllStream()` to observe one or all map v
 With reactive in-memory cache you will always have actual data on screen.
 Also, you can separate **subscription** to data and **request** of data to manage it easier.
 
-### RxJava 2
+### RxJava
 
-`mapmemory-rxjava2` adds accessors for RxJava types:
+`mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
 
 | Accessor            | Default value   | Description                         |
 |---------------------|-----------------|-------------------------------------|
