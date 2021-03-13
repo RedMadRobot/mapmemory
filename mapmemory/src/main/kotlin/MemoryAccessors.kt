@@ -1,6 +1,3 @@
-// Public API
-@file:Suppress("unused")
-
 package com.redmadrobot.mapmemory
 
 import com.redmadrobot.mapmemory.internal.getOrPutProperty

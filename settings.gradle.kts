@@ -11,5 +11,6 @@ rootProject.name = "mapmemory"
 include(
     "mapmemory",
     "mapmemory-rxjava2",
-    "mapmemory-coroutines"
+    "mapmemory-coroutines",
+    "mapmemory-test"
 )

@@ -2,9 +2,7 @@
 
 package com.redmadrobot.mapmemory
 
-import com.redmadrobot.mapmemory.internal.getOrPutProperty
 import kotlinx.coroutines.flow.*
-import kotlin.properties.ReadWriteProperty
 
 /**
  * Key/value storage of entities with type [T], which able to be accessed in reactive style.
@@ -86,7 +84,7 @@ public class ReactiveMap<T> {
     @Synchronized
     public fun change(transform: MutableMap<String, T>.() -> Unit) {
         internalMap.transform()
-        flow.tryEmit(internalMap.toMap())
+        flow.value = internalMap.toMap()
     }
 
     /** Checks if the map contains the given [key]. */
@@ -105,6 +103,6 @@ public class ReactiveMap<T> {
  *
  * It implemented using [StateFlow].
  */
-public fun <T> MapMemory.reactiveMap(): ReadWriteProperty<Any?, ReactiveMap<T>> {
-    return getOrPutProperty { ReactiveMap() }
+public fun <T> MapMemory.reactiveMap(): MapMemoryProperty<ReactiveMap<T>> {
+    return invoke { ReactiveMap() }
 }
