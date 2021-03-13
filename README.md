@@ -60,11 +60,13 @@ class CardsInMemoryStorage(memory: MapMemory) {
 
 There are default accessors available:
 
-| Accessor     | Default value | Description           |
-|--------------|---------------|-----------------------|
-| `nullable()` | `null`        | Store nullable values |
-| `map()`      | Empty map     | Store values in map   |
-| `list()`     | Empty list    | Store values in list  |
+| Accessor        | Default value | Description           |
+|-----------------|---------------|-----------------------|
+| `nullable()`    | `null`        | Store nullable values |
+| `map()`         | Empty map     | Store map             |
+| `mutableMap()`  | Empty map     | Store values in map   |
+| `list()`        | Empty list    | Store list            |
+| `mutableList()` | Empty list    | Store values in list  |
 
 You can create own accessor if needed.
 

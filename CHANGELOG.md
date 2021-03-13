@@ -1,10 +1,10 @@
 ## [Unreleased]
 
-### Scoped and shared fields (#1)
+### Scoped and shared values (#1)
 
-Now there are two types of memory fields: scoped (to class) and shared.
+Now there are two types of memory values: scoped (to class) and shared.
 
-All memory fields by default are scoped to the class where it's declared.
+All memory values by default are scoped to the class where it's declared.
 Scoping prevents from unintended sharing of properties with the same name between classes.
 This snippet demonstrates the problem:
 
@@ -67,6 +67,12 @@ You can just declare a nullable field:
 -var counter: Int by memory.withDefault { 0 }
 +var counter: Int by memory { 0 }
 ```
+
+### Mutable collections accessors
+> **BREAKING CHANGE**
+
+Now accessors `map` and `list` return delegates to access immutable collections.
+You should use `mutableMap` and `mutableList` for mutable versions of collections.
 
 ### Added
 
