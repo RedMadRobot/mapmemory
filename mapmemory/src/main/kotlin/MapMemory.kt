@@ -29,10 +29,18 @@ import kotlin.reflect.KProperty
  *
  * Memory should be singleton and can be cleared when need.
  */
-public open class MapMemory : MutableMap<String, Any?> by ConcurrentHashMap() {
+public open class MapMemory private constructor(
+    map: ConcurrentHashMap<String, Any>,
+) : MutableMap<String, Any> by map {
 
     /** Extension point. Gives ability to create extensions on companion. */
     public companion object;
+
+    /** Creates a new empty [MapMemory]. */
+    public constructor() : this(ConcurrentHashMap())
+
+    /** Creates a new [MapMemory] with the content from the given [map]. */
+    public constructor(map: Map<String, Any>) : this(ConcurrentHashMap(map))
 
     public inline operator fun <reified V : Any> invoke(
         crossinline defaultValue: () -> V,

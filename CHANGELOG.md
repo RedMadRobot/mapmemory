@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+### Added
+
+- Copying constructor for `MapMemory`.
+  Now you can initialize memory with specified content on creation.
+
+### Changed
+
+- `MapMemory` now is `MutableMap<String, Any>` instead of `MitableMap<String, Any?>`.
+  It is made to prevent NPEs because `ConcurrentHashMap` not supports nullable values.
+  You still can store nullable values in memory using delegate.
+
 ## [1.1] (2021-02-26)
 
 ### Added
