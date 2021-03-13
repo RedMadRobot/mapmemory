@@ -4,6 +4,8 @@
 
 - Copying constructor for `MapMemory`.
   Now you can initialize memory with specified content on creation.
+- New module `mapmemory-test`.
+  Contains utilities helping to test code that uses `MapMemory`.
 
 ### Changed
 
