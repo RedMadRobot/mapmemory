@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-### Scoped and shared fields
+### Scoped and shared fields (#1)
 
 Now there are two types of memory fields: scoped (to class) and shared.
 
@@ -53,6 +53,21 @@ class DebugPanelConfig(memory: MapMemory) {
 }
 ```
 
+### Removed `.nullable()` and `.withDefault { ... }`
+
+Accessor `nullable()` is not needed now.
+You can just declare a nullable field:
+```diff
+-val selectedOption: String? by memory.nullable()
++val selectedOption: String? by memory
+```
+
+`withDefault` is no more compatible with MapMemory, so you should use the operator `invoke` instead:
+```diff
+-var counter: Int by memory.withDefault { 0 }
++var counter: Int by memory { 0 }
+```
+
 ### Added
 
 - Copying constructor for `MapMemory`.
@@ -62,9 +77,9 @@ class DebugPanelConfig(memory: MapMemory) {
 
 ### Changed
 
-- `MapMemory` now is `MutableMap<String, Any>` instead of `MitableMap<String, Any?>`.
+- `MapMemory` now is `MutableMap<String, Any>` instead of `MutableMap<String, Any?>`.
   It is made to prevent NPEs because `ConcurrentHashMap` not supports nullable values.
-  You still can store nullable values in memory using delegate.
+  You still can store nullable values in memory using a delegate.
 
 ## [1.1] (2021-02-26)
 
