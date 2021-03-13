@@ -28,7 +28,8 @@ import kotlin.reflect.KProperty
  * storage.authToken = "[TOKEN_HERE]"
  * println(memory) // {com.example.TokenStorage#authToken: [TOKEN_HERE]}
  * ```
- * There are a number of delegates to store collections in memory: [map], [list]
+ * There are a number of delegates to store collections in memory:
+ * [map], [mutableMap], [list], [mutableList].
  *
  * You can specify default value using operator [invoke].
  * Default value will used if you're trying to read property before it was written.
