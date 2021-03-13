@@ -1,5 +1,8 @@
-# MapMemory <GitHub path="RedMadRobot/mapmemory"/>  
-[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral] [![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci] [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
+# MapMemory <GitHub path="RedMadRobot/mapmemory"/>
+
+[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral]
+[![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci]
+[![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
 
@@ -22,6 +25,7 @@ Simple in-memory cache conception built on `Map`.
 ## Installation
 
 Add dependencies:
+
 ```kotlin
 repositories {
     mavenCentral()
@@ -34,7 +38,7 @@ dependencies {
     implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0-rc1")
     implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0-rc1")
     implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0-rc1")
-    
+
     // if you want to test code that uses MapMemory
     testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0-rc1")
 }
@@ -42,44 +46,117 @@ dependencies {
 
 ## Conception
 
-Kotlin provides delegates for access to map entries.
+Kotlin provides delegates to access values in map:
+
+```kotlin
+val map = mapOf("answer" to 42)
+val answer: Int by map
+println(answer) // 42
+```
+
 This library exploits and improves this idea to implement in-memory storage.
 
 There are two simple principles:
-- Memory is a singleton, and it can be shared between many consumers
+
+- Memory is a singleton, and it is shared between many consumers
 - Memory holds data but not knows **what** data it holds
 
 ## Usage
 
+Imagine, you have `UsersRepository` used to get users' information from API.
+You want to remember last requested user.
+Let's store it into memory:
+
 ```kotlin
-class CardsInMemoryStorage(memory: MapMemory) {
+class UsersRepository(
+    private val api: Api,
+    memory: MapMemory,              // Memory injected into constructor
+) {
 
-    private val cards: MutableMap<String, Card> by memory.map()
+    var lastUser: User? by memory   // Use delegate to access memory value
+        private set
 
-    operator fun get(id: String): Card? = cards[id]
-    operator fun set(id: String, card: Card) {
-        cards[id] = card
+    suspend fun getUser(email: String): User {
+        return api.getUser(email)
+            .also { lastUser = it } // Save last received user to memory
     }
 }
 ```
 
-There are default accessors available:
+Memory is a singleton, but `UsersRepository` is not.
+Property `lastUser` is tied to memory lifetime, so it will survive `UsersRepository` recreation.
 
-| Accessor        | Default value | Description           |
-|-----------------|---------------|-----------------------|
-| `nullable()`    | `null`        | Store nullable values |
-| `map()`         | Empty map     | Store map             |
-| `mutableMap()`  | Empty map     | Store values in map   |
-| `list()`        | Empty list    | Store list            |
-| `mutableList()` | Empty list    | Store values in list  |
+You can specify default value will be used when value you're trying to read is not written yet.
+For example, we don't want nullable `User`, but want to get placeholder object `User.EMPTY` instead:
 
-You can create own accessor if needed.
-
-You, also, can use delegate without any functions:
 ```kotlin
-var unsafeValue: String by memory
+var lastUser: User by memory { User.EMPTY }
 ```
-Be careful, there no default values, and you will get `NoSuchElementException` if you try read value before it was written.
+
+### Collections
+
+You can write the following code to store mutable list in memory:
+
+```kotlin
+val users: MutableList<User> by memory { mutableListOf() }
+```
+
+Boilerplate.
+Fortunately there are shorthand accessors to store lists and maps:
+
+```kotlin
+val users by memory.mutableList<User>()
+```
+
+Accessors `mutableList` and `mutableMap` use concurrent collections under the hood.
+
+| Accessor        | Default value      | Description           |
+|-----------------|--------------------|-----------------------|
+| `map()`         | Empty map          | Store map             |
+| `mutableMap()`  | Empty mutable map  | Store values in map   |
+| `list()`        | Empty list         | Store list            |
+| `mutableList()` | Empty mutable list | Store values in list  |
+
+Feel free to create own accessors if needed.
+
+### Scoped and Shared values
+
+Let's look how MapMemory works under the hood.
+We have a class with memory property declared with delegate:
+
+```kotlin
+package com.example
+
+class TokenStorage(memory: MapMemory) {
+    var authToken: String by memory
+}
+```
+
+Delegate accesses memory values by key retrieved from property name.
+There are two types of memory property delegates:
+- **Scoped** to the class where the property is declared.
+  Property key is combination of class and property name: `com.example.TokenStorage#authToken`
+- **Shared** between all classes by the specified key.
+  All properties are scoped by default, you can share it with the function `shared`.
+
+Property `authToken` is scoped to class `TokenStorage`, but we can share it:
+```kotlin
+// It is a good practice to declare constants for shared memory keys.
+const val KEY_AUTH_TOKEN = "authToken"
+
+class TokenStorage(memory: MapMemory) {
+    var authToken: String by memory.shared(KEY_AUTH_TOKEN)
+}
+
+class Authenticator(memory: MapMemory) {
+    // Property name may be different
+    var savedToken: String by memory.shared(KEY_AUTH_TOKEN)
+}
+```
+Both `TokenStorage` and `Authenticator` will use the same memory value.
+
+> :warning: Keep in mind that it is just an example. 
+> In real code it may be more reasonably to inject `TokenStorage` into `Authenticator` instead of sharing memory by key.
 
 ### Reactive Style
 
@@ -106,6 +183,7 @@ Also, you can separate **subscription** to data and **request** of data to manag
 | `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
 
 Example of cache-first approach with reactive subscription:
+
 ```kotlin
 class CardsRepository(memory: MapMemory) {
 
@@ -151,6 +229,7 @@ class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
 | `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
 
 Example of cache-first approach with reactive subscription:
+
 ```kotlin
 class CardsRepository(private val api: CardsApi, memory: MapMemory) {
 
@@ -184,10 +263,13 @@ class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
 }
 ```
 
-### Memory Scopes
+## Advanced usage
 
-May be useful to create memory scopes.
-You can use it to control data lifetime.
+### Memory Lifetime
+
+May be useful to create memory instances with different lifetime.
+You can use it to control lifetime of the data stored within.
+
 ```kotlin
 /** Memory, available during a session and cleared on logout. */
 @Singleton
@@ -197,36 +279,13 @@ class SessionMemory @Inject constructor() : MapMemory()
 @Singleton
 class AppMemory @Inject constructor() : MapMemory()
 ```
+
 Keep in mind that you should manually clear `SessionMemory` on logout.
 
-Instead of creating subclass, you can provide MapMemory with [qualifiers]. 
-
-### Avoid `ClassCastException`
-
-It can be caused if you have declared fields with the same name but different types in several places.
-Note that field name used as a key to access a value in `MapMemory`.
-To avoid `ClassCastException`, use unique names for fields.
-
-This snippet demonstrates how it works:
-```kotlin
-class StringsStorage(memory: MapMemory) {
-    var values: MutableList<String> by memory.list()
-}
-
-class IntsStorage(memory: MapMemory) {
-    var values: MutableList<Int> by memory.list() // The same name as in StringsStorage
-}
-
-val strings = StringsStorage(memory)
-val ints = IntsStorage(memory)
-
-strings.values.add("A")
-ints.values.add(1)
-
-println(memory["values"]) // [A, 1]
-```
+> :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
 ## Contributing
+
 Merge requests are welcome.
 For major changes, please open an issue first to discuss what you would like to change.
 
