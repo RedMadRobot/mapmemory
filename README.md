@@ -292,7 +292,7 @@ memory.getScoped(MemoryConsumer::someMemoryValue)
 
 ### Upgrading from v1.1
 
-#### Breaking changes
+#### Potentially breaking changes
 
 **Collections accessors**
 
@@ -307,6 +307,11 @@ Extension `getOrPutProperty` become internal (it already was in `internal` packa
 -var counter: Int by memory.getOrPutProperty { 0 }
 +var counter: Int by memory { 0 }
 ```
+
+**Scoped and Shared values**
+
+Read ["Scoped and Shared values"](#scoped-and-shared-values) section.
+If you are sharing properties between classes by name, you should make these properties shared. 
 
 #### API Changes
 
