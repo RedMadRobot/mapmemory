@@ -132,7 +132,8 @@ class TokenStorage(memory: MapMemory) {
 }
 ```
 
-Delegate accesses memory values by key retrieved from property name.
+MapMemory is `MutableMap<String, Any>`.
+Delegate accesses map value by key retrieved from property name.
 There are two types of memory property delegates:
 - **Scoped** to the class where the property is declared.
   Property key is combination of class and property name: `com.example.TokenStorage#authToken`
@@ -160,65 +161,54 @@ Both `TokenStorage` and `Authenticator` will use the same memory value.
 
 ### Reactive Style
 
-To use `MapMemory` in reactive style, replace dependency `mapmemory` with `mapmemory-rxjava2` or `mapmemory-coroutines`.
+Reactive subscription to memory values is useful to keep data on all screens up to date:
 
-> You can't use both map `mapmemory-rxjava2` and `mapmemory-coroutines` at the same time because you will get duplicates in classpath.
+To use `MapMemory` in reactive style, replace dependency `mapmemory` with one of the following:
 
-Both of reactive implementations contain `RactiveMap`.
-`ReactiveMap` works similar to `MutableMap` but enables you to observe data in reactive manner.
-It has methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
+- `mapmemory-coroutines`
+- `mapmemory-rxjava2`
+- `mapmemory-rxjava3`
 
-With reactive in-memory cache you will always have actual data on screen.
-Also, you can separate **subscription** to data and **request** of data to manage it easier.
-
-### RxJava
-
-`mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
-
-| Accessor            | Default value   | Description                         |
-|---------------------|-----------------|-------------------------------------|
-| `behaviorSubject()` | Empty subject   | Store stream of values              |
-| `publishSubject()`  | Empty subject   | Store stream of values              |
-| `maybe()`           | `Maybe.empty()` | Reactive analog to store "nullable" |
-| `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
-
-Example of cache-first approach with reactive subscription:
+These modules provide accessors for reactive types:
 
 ```kotlin
-class CardsRepository(memory: MapMemory) {
+// with coroutines
+val selectedOption: MutableStateFlow<Option> by memory.stateFlow(Option.DEFAULT)
 
-    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
+// with RxJava
+val selectedOption: BehaviorSubject<Option> by memory.behaviorSubject()
+```
 
-    /** Returns observable for cards in cache. */
-    fun getCardsStream(): Observable<List<Card>> = cardsCache.getAllStream()
+> :warning: You can use only one of these dependencies at the same time
+> Otherwise build will fail due to duplicates in classpath.
 
-    /** Updates cards in cache. */
-    fun fetchCards(): Completable {
-        return Single.defer {/* get cards from network */}
-            .doOnSuccess { cardsCache.replaceAll(it) }
-            .ignoreResult()
-    }
-}
+MapMemory provides own reactive type - `ReactiveMap`.
+It works similar to `MutableMap` but enables you to observe data in reactive manner.
+There are methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
+You can implement cache-first approach using `ReactiveMap`:
 
-class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
-
-    init {
-        // Subscribe to cache
-        repository.getCardsStream()
-            .subscribe {/* update cards on screen */}
-    }
-
-    fun onRefresh() {
-        repository.fetchCards()
-            .subscribe(
-                {/* success! hide progress */},
-                {/* fail. hide progress and show error */}
-            )
+```kotlin
+class UsersRepository(
+    api: Api,
+    memory: MapMemory,
+) {
+    private val usersCache by memory.reactiveMap<User>()
+    
+    /** Returns stream of users from cache. */
+    fun getUsersStream(): Flow<List<User>> = usersCache.getAllStream()
+    
+    /** Returns stream of one user from cache. */
+    fun getUserStream(email: String): Flow<User> = usersCache.getStream(email)
+    
+    /** Update users in cache. */
+    suspend fun fetchUsers() {
+        val users: List<User> = api.getUsers()
+        usersCache.replaceAll(users.associateBy { it.email })
     }
 }
 ```
 
-### Coroutines
+#### Coroutines
 
 `mapmemory-coroutines` adds accessors for coroutines types:
 
@@ -228,40 +218,18 @@ class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
 | `sharedFlow()`      | Empty flow                              | Store stream of values              |
 | `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
 
-Example of cache-first approach with reactive subscription:
+> :memo: Coroutines reactive map uses `StateFlow` under the hood, so it will not be triggered while content not changed.
 
-```kotlin
-class CardsRepository(private val api: CardsApi, memory: MapMemory) {
+#### RxJava
 
-    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
+`mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
 
-    /** Returns flow for cards in cache. */
-    fun getCardsStream(): Flow<List<Card>> = cardsCache.getAllStream()
-
-    /** Updates cards in cache. */
-    suspend fun fetchCards() {
-        val cards = api.getCards()
-        cardsCache.replaceAll(cards.associateBy { it.id })
-    }
-}
-
-class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
-
-    init {
-        // Subscribe to cache
-        repository.getCardsStream()
-            .onEach {/* update cards on screen */}
-            .launchIn(viewModelScope)
-    }
-
-    fun onRefresh() {
-        viewModelScope.launch {
-            repository.fetchCards()
-            // success! hide progress
-        }
-    }
-}
-```
+| Accessor            | Default value   | Description                         |
+|---------------------|-----------------|-------------------------------------|
+| `behaviorSubject()` | Empty subject   | Store stream of values              |
+| `publishSubject()`  | Empty subject   | Store stream of values              |
+| `maybe()`           | `Maybe.empty()` | Reactive analog to store "nullable" |
+| `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
 
 ## Advanced usage
 
