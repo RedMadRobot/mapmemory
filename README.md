@@ -161,7 +161,7 @@ Both `TokenStorage` and `Authenticator` will use the same memory value.
 
 ### Reactive Style
 
-Reactive subscription to memory values is useful to keep data on all screens up to date:
+Reactive subscription to memory values is useful to keep data on all screens up to date.
 
 To use `MapMemory` in reactive style, replace dependency `mapmemory` with one of the following:
 
@@ -281,6 +281,47 @@ There are alternate syntax using property reference. It can be used when propert
 scopedKeyOf(MemoryConsumer::someMemoryValue)
 memory.putScoped(MemoryConsumer::someMemoryValue, "Changed Value")
 memory.getScoped(MemoryConsumer::someMemoryValue)
+```
+
+## Migration Guide
+
+### Upgrading from v1.1
+
+#### Breaking changes
+
+**Collections accessors**
+
+Now accessors `map` and `list` return delegates to access immutable collections.
+You should use `mutableMap` and `mutableList` for mutable versions of collections.
+
+**Closed access to getOrPutProperty**
+
+Extension `getOrPutProperty` become internal (it already was in `internal` package), use operator `MapMemory.invoke` instead.
+
+```diff
+-var counter: Int by memory.getOrPutProperty { 0 }
++var counter: Int by memory { 0 }
+```
+
+#### API Changes
+
+**Accessor `.nullable()` is deprecated**
+
+Accessor `nullable()` is not needed now.
+You can just declare a nullable field:
+
+```diff
+-val selectedOption: String? by memory.nullable()
++val selectedOption: String? by memory
+```
+
+**`.withDefault { ... }` is banned from use**
+
+`withDefault` is no more compatible with MapMemory, so you should use the operator `invoke` instead:
+
+```diff
+-var counter: Int by memory.withDefault { 0 }
++var counter: Int by memory { 0 }
 ```
 
 ## Contributing
