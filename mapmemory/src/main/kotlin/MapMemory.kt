@@ -40,11 +40,11 @@ import kotlin.reflect.KProperty
  * ### Scoped and shared values
  *
  * Delegate accesses memory values by key retrieved from property name.
- * There are two types of property delegates:
- * - **Scoped** to class where the property is declared.
+ * There are two types of memory property delegates:
+ * - **Scoped** to the class where the property is declared.
  *   Property key is combination of class and property name: `com.example.TokenStorage#authToken`
  * - **Shared** between all classes by the specified key.
- *   All properties are scoped by default, you can share it with function [shared].
+ *   All properties are scoped by default, you can share it with the function [shared].
  */
 public open class MapMemory private constructor(
     map: ConcurrentHashMap<String, Any>,

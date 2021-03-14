@@ -1,5 +1,8 @@
-# MapMemory <GitHub path="RedMadRobot/mapmemory"/>  
-[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral] [![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci] [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
+# MapMemory <GitHub path="RedMadRobot/mapmemory"/>
+
+[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral]
+[![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci]
+[![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
 
@@ -22,6 +25,7 @@ Simple in-memory cache conception built on `Map`.
 ## Installation
 
 Add dependencies:
+
 ```kotlin
 repositories {
     mavenCentral()
@@ -34,7 +38,7 @@ dependencies {
     implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0-rc1")
     implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0-rc1")
     implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0-rc1")
-    
+
     // if you want to test code that uses MapMemory
     testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0-rc1")
 }
@@ -42,59 +46,181 @@ dependencies {
 
 ## Conception
 
-Kotlin provides delegates for access to map entries.
+Kotlin provides delegates to access values in map:
+
+```kotlin
+val map = mapOf("answer" to 42)
+val answer: Int by map
+println(answer) // 42
+```
+
 This library exploits and improves this idea to implement in-memory storage.
 
 There are two simple principles:
-- Memory is a singleton, and it can be shared between many consumers
+
+- Memory is a singleton, and it is shared between many consumers
 - Memory holds data but not knows **what** data it holds
 
 ## Usage
 
+Imagine, you have `UsersRepository` used to get users' information from API.
+You want to remember last requested user.
+Let's store it into memory:
+
 ```kotlin
-class CardsInMemoryStorage(memory: MapMemory) {
+class UsersRepository(
+    private val api: Api,
+    memory: MapMemory,              // Memory injected into constructor
+) {
 
-    private val cards: MutableMap<String, Card> by memory.map()
+    var lastUser: User? by memory   // Use delegate to access memory value
+        private set
 
-    operator fun get(id: String): Card? = cards[id]
-    operator fun set(id: String, card: Card) {
-        cards[id] = card
+    suspend fun getUser(email: String): User {
+        return api.getUser(email)
+            .also { lastUser = it } // Save last received user to memory
     }
 }
 ```
 
-There are default accessors available:
+Memory is a singleton, but `UsersRepository` is not.
+Property `lastUser` is tied to memory lifetime, so it will survive `UsersRepository` recreation.
 
-| Accessor        | Default value | Description           |
-|-----------------|---------------|-----------------------|
-| `nullable()`    | `null`        | Store nullable values |
-| `map()`         | Empty map     | Store map             |
-| `mutableMap()`  | Empty map     | Store values in map   |
-| `list()`        | Empty list    | Store list            |
-| `mutableList()` | Empty list    | Store values in list  |
+You can specify default value will be used when value you're trying to read is not written yet.
+For example, we don't want nullable `User`, but want to get placeholder object `User.EMPTY` instead:
 
-You can create own accessor if needed.
-
-You, also, can use delegate without any functions:
 ```kotlin
-var unsafeValue: String by memory
+var lastUser: User by memory { User.EMPTY }
 ```
-Be careful, there no default values, and you will get `NoSuchElementException` if you try read value before it was written.
+
+### Collections
+
+You can write the following code to store mutable list in memory:
+
+```kotlin
+val users: MutableList<User> by memory { mutableListOf() }
+```
+
+Boilerplate.
+Fortunately there are shorthand accessors to store lists and maps:
+
+```kotlin
+val users by memory.mutableList<User>()
+```
+
+Accessors `mutableList` and `mutableMap` use concurrent collections under the hood.
+
+| Accessor        | Default value      | Description           |
+|-----------------|--------------------|-----------------------|
+| `map()`         | Empty map          | Store map             |
+| `mutableMap()`  | Empty mutable map  | Store values in map   |
+| `list()`        | Empty list         | Store list            |
+| `mutableList()` | Empty mutable list | Store values in list  |
+
+Feel free to create own accessors if needed.
+
+### Scoped and Shared values
+
+Let's look how MapMemory works under the hood.
+We have a class with memory property declared with delegate:
+
+```kotlin
+package com.example
+
+class TokenStorage(memory: MapMemory) {
+    var authToken: String by memory
+}
+```
+
+MapMemory is `MutableMap<String, Any>`.
+Delegate accesses map value by key retrieved from property name.
+There are two types of memory property delegates:
+- **Scoped** to the class where the property is declared.
+  Property key is combination of class and property name: `com.example.TokenStorage#authToken`
+- **Shared** between all classes by the specified key.
+  All properties are scoped by default, you can share it with the function `shared`.
+
+Property `authToken` is scoped to class `TokenStorage`, but we can share it:
+```kotlin
+// It is a good practice to declare constants for shared memory keys.
+const val KEY_AUTH_TOKEN = "authToken"
+
+class TokenStorage(memory: MapMemory) {
+    var authToken: String by memory.shared(KEY_AUTH_TOKEN)
+}
+
+class Authenticator(memory: MapMemory) {
+    // Property name may be different
+    var savedToken: String by memory.shared(KEY_AUTH_TOKEN)
+}
+```
+Both `TokenStorage` and `Authenticator` will use the same memory value.
+
+> :warning: Keep in mind that it is just an example. 
+> In real code it may be more reasonably to inject `TokenStorage` into `Authenticator` instead of sharing memory by key.
 
 ### Reactive Style
 
-To use `MapMemory` in reactive style, replace dependency `mapmemory` with `mapmemory-rxjava2` or `mapmemory-coroutines`.
+Reactive subscription to memory values is useful to keep data on all screens up to date:
 
-> You can't use both map `mapmemory-rxjava2` and `mapmemory-coroutines` at the same time because you will get duplicates in classpath.
+To use `MapMemory` in reactive style, replace dependency `mapmemory` with one of the following:
 
-Both of reactive implementations contain `RactiveMap`.
-`ReactiveMap` works similar to `MutableMap` but enables you to observe data in reactive manner.
-It has methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
+- `mapmemory-coroutines`
+- `mapmemory-rxjava2`
+- `mapmemory-rxjava3`
 
-With reactive in-memory cache you will always have actual data on screen.
-Also, you can separate **subscription** to data and **request** of data to manage it easier.
+These modules provide accessors for reactive types:
 
-### RxJava
+```kotlin
+// with coroutines
+val selectedOption: MutableStateFlow<Option> by memory.stateFlow(Option.DEFAULT)
+
+// with RxJava
+val selectedOption: BehaviorSubject<Option> by memory.behaviorSubject()
+```
+
+> :warning: You can use only one of these dependencies at the same time
+> Otherwise build will fail due to duplicates in classpath.
+
+MapMemory provides own reactive type - `ReactiveMap`.
+It works similar to `MutableMap` but enables you to observe data in reactive manner.
+There are methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
+You can implement cache-first approach using `ReactiveMap`:
+
+```kotlin
+class UsersRepository(
+    api: Api,
+    memory: MapMemory,
+) {
+    private val usersCache by memory.reactiveMap<User>()
+    
+    /** Returns stream of users from cache. */
+    fun getUsersStream(): Flow<List<User>> = usersCache.getAllStream()
+    
+    /** Returns stream of one user from cache. */
+    fun getUserStream(email: String): Flow<User> = usersCache.getStream(email)
+    
+    /** Update users in cache. */
+    suspend fun fetchUsers() {
+        val users: List<User> = api.getUsers()
+        usersCache.replaceAll(users.associateBy { it.email })
+    }
+}
+```
+
+#### Coroutines
+
+`mapmemory-coroutines` adds accessors for coroutines types:
+
+| Accessor            | Default value                           | Description                         |
+|---------------------|-----------------------------------------|-------------------------------------|
+| `stateFlow()`       | StateFlow with specified `initialValue` | Store stream of values              |
+| `sharedFlow()`      | Empty flow                              | Store stream of values              |
+| `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
+
+> :memo: Coroutines reactive map uses `StateFlow` under the hood, so it will not be triggered while content not changed.
+
+#### RxJava
 
 `mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
 
@@ -105,89 +231,13 @@ Also, you can separate **subscription** to data and **request** of data to manag
 | `maybe()`           | `Maybe.empty()` | Reactive analog to store "nullable" |
 | `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
 
-Example of cache-first approach with reactive subscription:
-```kotlin
-class CardsRepository(memory: MapMemory) {
+## Advanced usage
 
-    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
+### Memory Lifetime
 
-    /** Returns observable for cards in cache. */
-    fun getCardsStream(): Observable<List<Card>> = cardsCache.getAllStream()
+May be useful to create memory instances with different lifetime.
+You can use it to control lifetime of the data stored within.
 
-    /** Updates cards in cache. */
-    fun fetchCards(): Completable {
-        return Single.defer {/* get cards from network */}
-            .doOnSuccess { cardsCache.replaceAll(it) }
-            .ignoreResult()
-    }
-}
-
-class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
-
-    init {
-        // Subscribe to cache
-        repository.getCardsStream()
-            .subscribe {/* update cards on screen */}
-    }
-
-    fun onRefresh() {
-        repository.fetchCards()
-            .subscribe(
-                {/* success! hide progress */},
-                {/* fail. hide progress and show error */}
-            )
-    }
-}
-```
-
-### Coroutines
-
-`mapmemory-coroutines` adds accessors for coroutines types:
-
-| Accessor            | Default value                           | Description                         |
-|---------------------|-----------------------------------------|-------------------------------------|
-| `stateFlow()`       | StateFlow with specified `initialValue` | Store stream of values              |
-| `sharedFlow()`      | Empty flow                              | Store stream of values              |
-| `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
-
-Example of cache-first approach with reactive subscription:
-```kotlin
-class CardsRepository(private val api: CardsApi, memory: MapMemory) {
-
-    private val cardsCache: ReactiveMap<Card> by memory.reactiveMap()
-
-    /** Returns flow for cards in cache. */
-    fun getCardsStream(): Flow<List<Card>> = cardsCache.getAllStream()
-
-    /** Updates cards in cache. */
-    suspend fun fetchCards() {
-        val cards = api.getCards()
-        cardsCache.replaceAll(cards.associateBy { it.id })
-    }
-}
-
-class CardsViewModel(private val repository: CardsRepository) : ViewModel() {
-
-    init {
-        // Subscribe to cache
-        repository.getCardsStream()
-            .onEach {/* update cards on screen */}
-            .launchIn(viewModelScope)
-    }
-
-    fun onRefresh() {
-        viewModelScope.launch {
-            repository.fetchCards()
-            // success! hide progress
-        }
-    }
-}
-```
-
-### Memory Scopes
-
-May be useful to create memory scopes.
-You can use it to control data lifetime.
 ```kotlin
 /** Memory, available during a session and cleared on logout. */
 @Singleton
@@ -197,36 +247,44 @@ class SessionMemory @Inject constructor() : MapMemory()
 @Singleton
 class AppMemory @Inject constructor() : MapMemory()
 ```
+
 Keep in mind that you should manually clear `SessionMemory` on logout.
 
-Instead of creating subclass, you can provide MapMemory with [qualifiers]. 
+> :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
-### Avoid `ClassCastException`
+### Testing
 
-It can be caused if you have declared fields with the same name but different types in several places.
-Note that field name used as a key to access a value in `MapMemory`.
-To avoid `ClassCastException`, use unique names for fields.
+Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
 
-This snippet demonstrates how it works:
+Using `mapMemoryOf` and `scopedKeyOf` you can build mock memory:
+
 ```kotlin
-class StringsStorage(memory: MapMemory) {
-    var values: MutableList<String> by memory.list()
+class MemoryConsumer(memory: MapMemory) {
+    var someMemoryValue: String by memory
 }
 
-class IntsStorage(memory: MapMemory) {
-    var values: MutableList<Int> by memory.list() // The same name as in StringsStorage
-}
+val memory = mapMemoryOf(
+    scopedKeyOf<MemoryConsumer>("someMemoryValue") to "Mock Value"
+)
+```
 
-val strings = StringsStorage(memory)
-val ints = IntsStorage(memory)
+You can also get or set scoped values using function `putScoped` and `getScoped`:
 
-strings.values.add("A")
-ints.values.add(1)
+```kotlin
+memory.putScoped<MemoryConsumer>("someMemoryValue", "Changed Value")
+memory.getScoped<MemoryConsumer>("someMemoryValue")
+```
 
-println(memory["values"]) // [A, 1]
+There are alternate syntax using property reference. It can be used when property in class is public:
+
+```kotlin
+scopedKeyOf(MemoryConsumer::someMemoryValue)
+memory.putScoped(MemoryConsumer::someMemoryValue, "Changed Value")
+memory.getScoped(MemoryConsumer::someMemoryValue)
 ```
 
 ## Contributing
+
 Merge requests are welcome.
 For major changes, please open an issue first to discuss what you would like to change.
 
