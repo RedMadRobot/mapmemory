@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.0-rc1] (2021-03-14)
+
 ### Scoped and shared values (#1)
 
 Now there are two types of memory values: scoped (to class) and shared.
@@ -109,5 +111,6 @@ You should use `mutableMap` and `mutableList` for mutable versions of collection
 
 Public release
 
-[unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v1.1...main
+[unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v2.0-rc1...main
+[2.0-rc1]: https://github.com/RedMadRobot/mapmemory/compare/v1.1...v2.0-rc1
 [1.1]: https://github.com/RedMadRobot/mapmemory/compare/v1.0...v1.1
