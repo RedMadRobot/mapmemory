@@ -252,6 +252,37 @@ Keep in mind that you should manually clear `SessionMemory` on logout.
 
 > :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
+### Testing
+
+Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
+
+Using `mapMemoryOf` and `scopedKeyOf` you can build mock memory:
+
+```kotlin
+class MemoryConsumer(memory: MapMemory) {
+    var someMemoryValue: String by memory
+}
+
+val memory = mapMemoryOf(
+    scopedKeyOf<MemoryConsumer>("someMemoryValue") to "Mock Value"
+)
+```
+
+You can also get or set scoped values using function `putScoped` and `getScoped`:
+
+```kotlin
+memory.putScoped<MemoryConsumer>("someMemoryValue", "Changed Value")
+memory.getScoped<MemoryConsumer>("someMemoryValue")
+```
+
+There are alternate syntax using property reference. It can be used when property in class is public:
+
+```kotlin
+scopedKeyOf(MemoryConsumer::someMemoryValue)
+memory.putScoped(MemoryConsumer::someMemoryValue, "Changed Value")
+memory.getScoped(MemoryConsumer::someMemoryValue)
+```
+
 ## Contributing
 
 Merge requests are welcome.
