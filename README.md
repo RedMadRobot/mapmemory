@@ -59,39 +59,47 @@ val answer: Int by map
 println(answer) // 42
 ```
 
-This library exploits and improves this idea to implement in-memory storage.
+This library uses this idea to implement in-memory storage.
 
 There are two simple principles:
 
-- Memory is a singleton, and it is shared between many consumers
-- Memory holds data but not knows **what** data it holds
+- **MapMemory** is a singleton, and it is shared between many consumers
+- **MapMemory** holds data but not knows **what** data it holds
 
 ## Usage
 
+> :memo: If you use any kind of DI framework, you should provide `MapMemory` with `Singleton` scope:
+>
+> ```kotlin
+> @Provides
+> @Singleton
+> fun provideMapMemory(): MapMemory = MapMemory()
+> ```
+> If you don't, you should create a single instance of `MapMemory` and use it everywhere.
+
 Imagine, you have `UsersRepository` used to get users' information from API.
-You want to remember last requested user.
-Let's store it into memory:
+You want to remember the last requested user.
+Let's store it into a `MapMemory`:
 
 ```kotlin
 class UsersRepository(
     private val api: Api,
-    memory: MapMemory,              // Memory injected into constructor
+    memory: MapMemory,              // (1) Inject MapMemory into constructor
 ) {
 
-    var lastUser: User? by memory   // Use delegate to access memory value
+    var lastUser: User? by memory   // (2) Declare in-memory property using delegate
         private set
 
     suspend fun getUser(email: String): User {
         return api.getUser(email)
-            .also { lastUser = it } // Save last received user to memory
+            .also { lastUser = it } // (3) Use the property
     }
 }
 ```
+`MapMemory` is a singleton, but `UsersRepository` is not.
+Property `lastUser` is tied to `MapMemory` lifetime, so it will survive `UsersRepository` recreation.
 
-Memory is a singleton, but `UsersRepository` is not.
-Property `lastUser` is tied to memory lifetime, so it will survive `UsersRepository` recreation.
-
-You can specify default value will be used when value you're trying to read is not written yet.
+You can specify the default value that will be used when the value you're trying to read is not written yet.
 For example, we don't want nullable `User`, but want to get placeholder object `User.EMPTY` instead:
 
 ```kotlin
@@ -100,14 +108,14 @@ var lastUser: User by memory { User.EMPTY }
 
 ### Collections
 
-You can write the following code to store mutable list in memory:
+You can write the following code to store mutable list in `MapMemory`:
 
 ```kotlin
 val users: MutableList<User> by memory { mutableListOf() }
 ```
 
 Boilerplate.
-Fortunately there are shorthand accessors to store lists and maps:
+Fortunately, there are shorthand accessors to store lists and maps:
 
 ```kotlin
 val users by memory.mutableList<User>()
@@ -122,12 +130,12 @@ Accessors `mutableList` and `mutableMap` use concurrent collections under the ho
 | `list()`        | Empty list         | Store list            |
 | `mutableList()` | Empty mutable list | Store values in list  |
 
-Feel free to create own accessors if needed.
+Feel free to create your accessors if needed.
 
 ### Scoped and Shared values
 
-Let's look how MapMemory works under the hood.
-We have a class with memory property declared with delegate:
+Let's look at how MapMemory works under the hood.
+We have a class with in-memory property declared with delegate:
 
 ```kotlin
 package com.example
@@ -137,17 +145,18 @@ class TokenStorage(memory: MapMemory) {
 }
 ```
 
-MapMemory is `MutableMap<String, Any>`.
+`MapMemory` is `MutableMap<String, Any>`.
 Delegate accesses map value by key retrieved from property name.
-There are two types of memory property delegates:
+This behavior differs for two types of in-memory property delegates:
 - **Scoped** to the class where the property is declared.
   Property key is combination of class and property name: `com.example.TokenStorage#authToken`
 - **Shared** between all classes by the specified key.
   All properties are scoped by default, you can share it with the function `shared`.
 
 Property `authToken` is scoped to class `TokenStorage`, but we can share it:
+
 ```kotlin
-// It is a good practice to declare constants for shared memory keys.
+// It is a good practice to declare constants for shared keys.
 const val KEY_AUTH_TOKEN = "authToken"
 
 class TokenStorage(memory: MapMemory) {
@@ -159,16 +168,17 @@ class Authenticator(memory: MapMemory) {
     var savedToken: String by memory.shared(KEY_AUTH_TOKEN)
 }
 ```
-Both `TokenStorage` and `Authenticator` will use the same memory value.
 
-> :warning: Keep in mind that it is just an example. 
-> In real code it may be more reasonably to inject `TokenStorage` into `Authenticator` instead of sharing memory by key.
+Both `TokenStorage` and `Authenticator` will use the same value.
+
+> :warning: Keep in mind that it is just an example.
+> In real code it may be more reasonable to inject `TokenStorage` into `Authenticator` instead of sharing in-memory property by key.
 
 ### Reactive Style
 
-Reactive subscription to memory values is useful to keep data on all screens up to date.
+Reactive subscription to values is useful to keep data on all screens up to date.
 
-To use `MapMemory` in reactive style, replace dependency `mapmemory` with one of the following:
+To use MapMemory in reactive style, replace dependency `mapmemory` with one of the following:
 
 - `mapmemory-coroutines`
 - `mapmemory-rxjava2`
@@ -185,10 +195,10 @@ val selectedOption: BehaviorSubject<Option> by memory.behaviorSubject()
 ```
 
 > :warning: You can use only one of these dependencies at the same time
-> Otherwise build will fail due to duplicates in classpath.
+> Otherwise build will fail due to duplicates in the classpath.
 
-MapMemory provides own reactive type - `ReactiveMap`.
-It works similar to `MutableMap` but enables you to observe data in reactive manner.
+MapMemory provides the type `ReactiveMap`.
+It works similar to `MutableMap` but enables you to observe data in a reactive manner.
 There are methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
 You can implement cache-first approach using `ReactiveMap`:
 
@@ -223,7 +233,7 @@ class UsersRepository(
 | `sharedFlow()`      | Empty flow                              | Store stream of values              |
 | `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
 
-> :memo: Coroutines reactive map uses `StateFlow` under the hood, so it will not be triggered while content not changed.
+> :memo: Coroutines reactive map uses `StateFlow` under the hood, so it will not be triggered while its content is not changed.
 
 #### RxJava
 
@@ -238,17 +248,17 @@ class UsersRepository(
 
 ## Advanced usage
 
-### Memory Lifetime
+### MapMemory Lifetime
 
-May be useful to create memory instances with different lifetime.
-You can use it to control lifetime of the data stored within.
+It may be useful to create `MapMemory` instances with a different lifetime.
+You can use it to control the lifetime of the data stored within.
 
 ```kotlin
-/** Memory, available during a session and cleared on logout. */
+/** MapMemory, available during a session and cleared on logout. */
 @Singleton
 class SessionMemory @Inject constructor() : MapMemory()
 
-/** Memory, available during the app lifetime. */
+/** MapMemory, available during the app lifetime. */
 @Singleton
 class AppMemory @Inject constructor() : MapMemory()
 ```
@@ -261,7 +271,7 @@ Keep in mind that you should manually clear `SessionMemory` on logout.
 
 Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
 
-Using `mapMemoryOf` and `scopedKeyOf` you can build mock memory:
+Using `mapMemoryOf` and `scopedKeyOf` you can build mock `MapMemory`:
 
 ```kotlin
 class MemoryConsumer(memory: MapMemory) {
@@ -311,7 +321,7 @@ Extension `getOrPutProperty` become internal (it already was in `internal` packa
 **Scoped and Shared values**
 
 Read ["Scoped and Shared values"](#scoped-and-shared-values) section.
-If you are sharing properties between classes by name, you should make these properties shared. 
+If you are sharing properties between classes by name, you should make these properties shared.
 
 #### API Changes
 
