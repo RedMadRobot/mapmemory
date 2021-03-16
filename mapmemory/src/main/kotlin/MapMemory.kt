@@ -109,7 +109,7 @@ public open class MapMemory private constructor(
         replaceWith = ReplaceWith("this(defaultValue)"),
     )
     @Suppress("UNUSED_PARAMETER")
-    public fun <V> withDefault(defaultValue: (key: String) -> V): MutableMap<String, V> {
+    public fun withDefault(defaultValue: (key: String) -> Any): MutableMap<String, Any> {
         throw UnsupportedOperationException("Should not be called")
     }
 
