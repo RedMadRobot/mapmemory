@@ -1,0 +1,4 @@
+public final class com/redmadrobot/mapmemory/MapMemoryKt {
+	public static final fun mapMemoryOf ([Lkotlin/Pair;)Lcom/redmadrobot/mapmemory/MapMemory;
+}
+
