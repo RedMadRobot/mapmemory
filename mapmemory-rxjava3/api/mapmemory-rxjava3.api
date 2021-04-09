@@ -1,33 +1,49 @@
-public final class com/redmadrobot/mapmemory/ReactiveMap {
+public final class com/redmadrobot/mapmemory/ReactiveMutableMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
 	public fun <init> ()V
-	public fun <init> (Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;)V
-	public synthetic fun <init> (Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun change (Lkotlin/jvm/functions/Function1;)V
-	public final fun clear ()V
-	public final fun contains (Ljava/lang/String;)Z
-	public final fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public fun <init> (Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)V
+	public synthetic fun <init> (Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun change (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun clear ()V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getAll ()Ljava/util/List;
 	public final fun getAllStream ()Lio/reactivex/rxjava3/core/Observable;
-	public final fun getStream (Ljava/lang/String;)Lio/reactivex/rxjava3/core/Observable;
-	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
-	public final fun isEmpty ()Z
-	public final fun putAll (Ljava/util/Map;)V
-	public final fun remove (Ljava/lang/String;)V
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public final fun getObservable ()Lio/reactivex/rxjava3/core/Observable;
+	public fun getSize ()I
+	public final fun getStream (Ljava/lang/Object;)Lio/reactivex/rxjava3/core/Observable;
+	public fun getValues ()Ljava/util/Collection;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun replaceAll (Ljava/util/Map;)V
-	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun size ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun values ()Ljava/util/Collection;
 }
 
-public final class com/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy : java/lang/Enum {
-	public static final field NO_REPLAY Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;
-	public static final field REPLAY_ALL Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;
-	public static final field REPLAY_LAST Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;
-	public static fun valueOf (Ljava/lang/String;)Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;
-	public static fun values ()[Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;
+public final class com/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy : java/lang/Enum {
+	public static final field NO_REPLAY Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;
+	public static final field REPLAY_ALL Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;
+	public static final field REPLAY_LAST Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;
+	public static fun valueOf (Ljava/lang/String;)Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;
+	public static fun values ()[Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;
 }
 
-public final class com/redmadrobot/mapmemory/ReactiveMapKt {
-	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static synthetic fun reactiveMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+public final class com/redmadrobot/mapmemory/ReactiveMutableMapKt {
+	public static final fun getValueObservable (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;Ljava/lang/Object;)Lio/reactivex/rxjava3/core/Observable;
+	public static final fun getValuesObservable (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;)Lio/reactivex/rxjava3/core/Observable;
+	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun reactiveMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 }
 
 public final class com/redmadrobot/mapmemory/RxAccessorsKt {
