@@ -26,6 +26,22 @@ RxJava:
 - `getAllStream` -> `valuesObservable`
 - New field `observable` with the whole map
 
+### KAPT: 'IllegalStateException: Couldn't find declaration file' on delegate with inline getValue operator
+
+There is a bug in Kotlin Compiler that affects MapMemory if you create subclasses - [KT-46317](https://youtrack.jetbrains.com/issue/KT-46317).
+You can use module `mapmemory-kapt-bug-workaround` as a workaround:
+
+```kotlin
+dependencies {
+    implementation("com.redmadrobot.mapmemory:mapmemory-kapt-bug-workaround:[latest-version]")
+}
+```
+
+```diff
+- val someValue: String by memory
++ val someValue: String by memory.value()
+```
+
 ## [2.0-rc1] (2021-03-14)
 
 ### Scoped and shared values (#1)

@@ -13,5 +13,6 @@ include(
     "mapmemory-rxjava2",
     "mapmemory-rxjava3",
     "mapmemory-coroutines",
-    "mapmemory-test"
+    "mapmemory-test",
+    "mapmemory-kapt-bug-workaround"
 )
