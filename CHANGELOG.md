@@ -14,7 +14,7 @@ Also, you can wrap `Map` with `ReactiveMutableMap`, using constructor.
 
 Methods `getAll` replaced with field `values` to match `Map` interface.
 
-Word `stream` in method names replaced with implementation-specific words to make API clearer.
+Word `stream` in methods names replaced with implementation-specific words to make API clearer.
 
 Coroutines:
 - `getStream` -> `getFlow` and `getValueFlow`

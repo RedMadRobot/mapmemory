@@ -210,7 +210,7 @@ You can implement cache-first approach using `ReactiveMutableMap`:
       api: Api,
       memory: MapMemory,
   ) {
-      private val usersCache by memory.reactiveMutableMap<User>()
+      private val usersCache by memory.reactiveMutableMap<String, User>()
   
       /** Returns stream of users from cache. */
       fun getUsersFlow(): Flow<List<User>> = usersCache.valuesFlow
@@ -236,7 +236,7 @@ You can implement cache-first approach using `ReactiveMutableMap`:
       api: Api,
       memory: MapMemory,
   ) {
-      private val usersCache by memory.reactiveMutableMap<User>()
+      private val usersCache by memory.reactiveMutableMap<String, User>()
   
       /** Returns stream of users from cache. */
       fun getUsersObservable(): Observable<List<User>> = usersCache.valuesObservable
@@ -374,6 +374,25 @@ You can just declare a nullable field:
 -var counter: Int by memory.withDefault { 0 }
 +var counter: Int by memory { 0 }
 ```
+
+#### ReactiveMap -> ReactiveMutableMap
+
+```diff
+-var users by memory.reactiveMap<User>()
++var users by memory.reactiveMutableMap<String, User>()
+```
+
+**Naming changes**
+
+Word `stream` in methods names replaced with implementation-specific words to make API clearer.
+
+Coroutines:
+- `getStream` -> `getFlow` and `getValueFlow`
+- `getAllStream` -> `valuesFlow`
+
+RxJava:
+- `getStream` -> `getValueObservable`
+- `getAllStream` -> `valuesObservable`
 
 ## Contributing
 
