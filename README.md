@@ -318,31 +318,48 @@ dependencies {
 
 Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
 
-Using `mapMemoryOf` and `scopedKeyOf` you can build mock `MapMemory`:
+Imagine you want to build memory filled with mock data for the following class:
 
 ```kotlin
-class MemoryConsumer(memory: MapMemory) {
-    var someMemoryValue: String by memory
-}
+package com.example
 
+class UserCache(memory: MapMemory) {
+    var name: String by memory
+    var ages: Int by memory
+}
+```
+
+You can put it by key:
+
+```kotlin
+val memory = MapMemory()
+memory["com.example.UserCache#name"] = "John Doe"
+memory["com.example.UserCache#ages"] = 42
+```
+
+It is easy to make mistake and this approach requires knowing how MapMemory work under the hood.
+Using `mapMemoryOf` and `scopedKeyOf` you can build mock `MapMemory` much easier:
+
+```kotlin
 val memory = mapMemoryOf(
-    scopedKeyOf<MemoryConsumer>("someMemoryValue") to "Mock Value"
+    scopedKeyOf(UserCache::name) to "John Doe",
+    scopedKeyOf(UserCache::ages) to 42,
 )
 ```
 
-You can also get or set scoped values using function `putScoped` and `getScoped`:
+You can also get or set scoped values using type-safe functions `putScoped` and `getScoped`:
 
 ```kotlin
-memory.putScoped<MemoryConsumer>("someMemoryValue", "Changed Value")
-memory.getScoped<MemoryConsumer>("someMemoryValue")
+memory.putScoped(UserCache::name, "Jane Doe")
+memory.getScoped(UserCache::name)
 ```
 
-There are alternate syntax using property reference. It can be used when property in class is public:
+There are alternate syntax to use if properties in class are private and can't be accessed via reference:
 
 ```kotlin
-scopedKeyOf(MemoryConsumer::someMemoryValue)
-memory.putScoped(MemoryConsumer::someMemoryValue, "Changed Value")
-memory.getScoped(MemoryConsumer::someMemoryValue)
+scopedKeyOf<UserStorage>("name")
+memory.putScoped<UserStorage>("name", "Jane Doe")
+memory.getScoped<UserStorage>("name")
 ```
 
 ## Migration Guide
