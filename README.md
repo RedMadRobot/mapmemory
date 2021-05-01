@@ -37,15 +37,15 @@ repositories {
 }
 
 dependencies {
-    implementation("com.redmadrobot.mapmemory:mapmemory:2.0-rc1")
+    implementation("com.redmadrobot.mapmemory:mapmemory:2.0")
 
     // or if you want to work with memory in reactive style, add one of
-    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0-rc1")
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0-rc1")
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0-rc1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0")
 
     // if you want to test code that uses MapMemory
-    testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0-rc1")
+    testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0")
 }
 ```
 
