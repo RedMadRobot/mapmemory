@@ -3,6 +3,7 @@ import com.redmadrobot.build.extension.*
 plugins {
     id("redmadrobot.root-project") version "0.8"
     id("com.github.ben-manes.versions") version "0.36.0"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.5.0"
     `maven-publish`
 }
 
@@ -42,4 +43,8 @@ subprojects {
             if (isReleaseVersion && credentialsExist("ossrh")) ossrh()
         }
     }
+}
+
+apiValidation {
+    ignoredPackages.add("com.redmadrobot.mapmemory.internal")
 }

@@ -197,54 +197,85 @@ val selectedOption: BehaviorSubject<Option> by memory.behaviorSubject()
 > :warning: You can use only one of these dependencies at the same time
 > Otherwise build will fail due to duplicates in the classpath.
 
-MapMemory provides the type `ReactiveMap`.
+MapMemory provides the type `ReactiveMutableMap`.
 It works similar to `MutableMap` but enables you to observe data in a reactive manner.
-There are methods `getStream(key)` and `getAllStream()` to observe one or all map values accordingly.
-You can implement cache-first approach using `ReactiveMap`:
+There are methods to observe one or all map values.
+You can implement cache-first approach using `ReactiveMutableMap`:
 
-```kotlin
-class UsersRepository(
-    api: Api,
-    memory: MapMemory,
-) {
-    private val usersCache by memory.reactiveMap<User>()
-    
-    /** Returns stream of users from cache. */
-    fun getUsersStream(): Flow<List<User>> = usersCache.getAllStream()
-    
-    /** Returns stream of one user from cache. */
-    fun getUserStream(email: String): Flow<User> = usersCache.getStream(email)
-    
-    /** Update users in cache. */
-    suspend fun fetchUsers() {
-        val users: List<User> = api.getUsers()
-        usersCache.replaceAll(users.associateBy { it.email })
-    }
-}
-```
+<details open>
+  <summary>Coroutines</summary>
+
+  ```kotlin
+  class UsersRepository(
+      api: Api,
+      memory: MapMemory,
+  ) {
+      private val usersCache by memory.reactiveMutableMap<User>()
+  
+      /** Returns stream of users from cache. */
+      fun getUsersFlow(): Flow<List<User>> = usersCache.valuesFlow
+  
+      /** Returns stream of one user from cache. */
+      fun getUserFlow(id: String): Flow<User> = usersCache.getValueFlow(id)
+  
+      /** Update users in cache. */
+      suspend fun fetchUsers() {
+          val users: List<User> = api.getUsers()
+          usersCache.replaceAll(users.associateBy { it.id })
+      }
+  }
+  ```
+
+</details>
+
+<details>
+  <summary>JxJava</summary>
+
+  ```kotlin
+  class UsersRepository(
+      api: Api,
+      memory: MapMemory,
+  ) {
+      private val usersCache by memory.reactiveMutableMap<User>()
+  
+      /** Returns stream of users from cache. */
+      fun getUsersObservable(): Observable<List<User>> = usersCache.valuesObservable
+  
+      /** Returns stream of one user from cache. */
+      fun getUserObservable(id: String): Observable<User> = usersCache.getValueObservable(id)
+  
+      /** Update users in cache. */
+      fun fetchUsers() {
+          val users: List<User> = api.getUsers()
+          usersCache.replaceAll(users.associateBy { it.id })
+      }
+  }
+  ```
+
+</details>
 
 #### Coroutines
 
 `mapmemory-coroutines` adds accessors for coroutines types:
 
-| Accessor            | Default value                           | Description                         |
-|---------------------|-----------------------------------------|-------------------------------------|
-| `stateFlow()`       | StateFlow with specified `initialValue` | Store stream of values              |
-| `sharedFlow()`      | Empty flow                              | Store stream of values              |
-| `reactiveMap()`     | Empty map                               | Store values in **reactive map**    |
+| Accessor               | Default value                           | Description                      |
+|------------------------|-----------------------------------------|----------------------------------|
+| `stateFlow()`          | StateFlow with specified `initialValue` | Store stream of values           |
+| `sharedFlow()`         | Empty flow                              | Store stream of values           |
+| `reactiveMutableMap()` | Empty map                               | Store values in **reactive map** |
 
-> :memo: Coroutines reactive map uses `StateFlow` under the hood, so it will not be triggered while its content is not changed.
+> :memo: Coroutines implementation of reactive map uses `SharedFlow` under the hood, so it will be triggered even if its content is not changed.
 
 #### RxJava
 
 `mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
 
-| Accessor            | Default value   | Description                         |
-|---------------------|-----------------|-------------------------------------|
-| `behaviorSubject()` | Empty subject   | Store stream of values              |
-| `publishSubject()`  | Empty subject   | Store stream of values              |
-| `maybe()`           | `Maybe.empty()` | Reactive analog to store "nullable" |
-| `reactiveMap()`     | Empty map       | Store values in **reactive map**    |
+| Accessor               | Default value   | Description                         |
+|------------------------|-----------------|-------------------------------------|
+| `behaviorSubject()`    | Empty subject   | Store stream of values              |
+| `publishSubject()`     | Empty subject   | Store stream of values              |
+| `maybe()`              | `Maybe.empty()` | Reactive analog to store "nullable" |
+| `reactiveMutableMap()` | Empty map       | Store values in **reactive map**    |
 
 ## Advanced usage
 

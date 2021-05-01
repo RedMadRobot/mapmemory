@@ -1,5 +1,31 @@
 ## [Unreleased]
 
+### ReactiveMap refactored
+
+`ReactiveMap` renamed to `ReactiveMutableMap`.
+There are two type parameters `K` (for keys), `V` (for values) instead of one `T` (for values), so you can use keys with a type different from `String`.
+
+Now `ReactiveMutableMap` implements interface `MutableMap`.
+Also, you can wrap `Map` with `ReactiveMutableMap`, using constructor.
+
+#### Naming changes
+
+> Old versions of methods are marked with `@Deprecated` to help migrate to new naming.
+
+Methods `getAll` replaced with field `values` to match `Map` interface.
+
+Word `stream` in method names replaced with implementation-specific words to make API clearer.
+
+Coroutines:
+- `getStream` -> `getFlow` and `getValueFlow`
+- `getAllStream` -> `valuesFlow`
+- New field `flow` with the whole map
+
+RxJava:
+- `getStream` -> `getValueObservable`
+- `getAllStream` -> `valuesObservable`
+- New field `observable` with the whole map
+
 ## [2.0-rc1] (2021-03-14)
 
 ### Scoped and shared values (#1)

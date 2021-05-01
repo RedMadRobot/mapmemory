@@ -1,0 +1,45 @@
+public final class com/redmadrobot/mapmemory/CoroutinesAccessorsKt {
+	public static final fun sharedFlow (Lcom/redmadrobot/mapmemory/MapMemory;IILkotlinx/coroutines/channels/BufferOverflow;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun sharedFlow$default (Lcom/redmadrobot/mapmemory/MapMemory;IILkotlinx/coroutines/channels/BufferOverflow;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun stateFlow (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+}
+
+public final class com/redmadrobot/mapmemory/ReactiveMutableMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun change (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun clear ()V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getAll ()Ljava/util/List;
+	public final fun getAllStream ()Lkotlinx/coroutines/flow/Flow;
+	public fun getEntries ()Ljava/util/Set;
+	public final fun getFlow ()Lkotlinx/coroutines/flow/Flow;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getSize ()I
+	public final fun getStream (Ljava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public fun getValues ()Ljava/util/Collection;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun replaceAll (Ljava/util/Map;)V
+	public final fun size ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class com/redmadrobot/mapmemory/ReactiveMutableMapKt {
+	public static final fun getFlow (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;Ljava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun getValueFlow (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;Ljava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun getValuesFlow (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+}
+
