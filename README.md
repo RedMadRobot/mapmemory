@@ -298,6 +298,22 @@ Keep in mind that you should manually clear `SessionMemory` on logout.
 
 > :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
+#### KAPT: 'IllegalStateException: Couldn't find declaration file' on delegate with inline getValue operator
+
+There is the bug in Kotlin Compiler that affects MapMemory if you create subclasses - [KT-46317](https://youtrack.jetbrains.com/issue/KT-46317).
+You can use module `mapmemory-kapt-bug-workaround` as a workaround:
+
+```kotlin
+dependencies {
+    implementation("com.redmadrobot.mapmemory:mapmemory-kapt-bug-workaround:[latest-version]")
+}
+```
+
+```diff
+- val someValue: String by memory
++ val someValue: String by memory.value()
+```
+
 ### Testing
 
 Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
