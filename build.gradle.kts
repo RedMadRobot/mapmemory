@@ -1,7 +1,7 @@
 import com.redmadrobot.build.extension.*
 
 plugins {
-    id("redmadrobot.root-project") version "0.8"
+    id("redmadrobot.root-project") version "0.8.2"
     id("com.github.ben-manes.versions") version "0.36.0"
     id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.5.0"
     `maven-publish`
@@ -28,7 +28,7 @@ redmadrobot {
 }
 
 repositories {
-    jcenter() // TODO: Remove when detekt-formatting plugin will be published to Maven Central
+    mavenCentral()
 }
 
 subprojects {
