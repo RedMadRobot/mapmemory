@@ -1,7 +1,7 @@
-import com.redmadrobot.build.extension.*
+import com.redmadrobot.build.dsl.*
 
 plugins {
-    id("redmadrobot.root-project") version "0.8.2"
+    id("redmadrobot.root-project") version "0.11"
     id("com.github.ben-manes.versions") version "0.36.0"
     id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.5.0"
     `maven-publish`
@@ -11,7 +11,7 @@ apply(plugin = "redmadrobot.detekt")
 
 redmadrobot {
     publishing {
-        signArtifacts = !isRunningOnCi
+        signArtifacts.set(!isRunningOnCi)
 
         pom {
             setGitHubProject("RedMadRobot/mapmemory")
