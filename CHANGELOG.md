@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Housekeeping
+
+- infrastructure 0.8.2 -> 0.11
+- detekt 1.16.0 -> 1.17.1
+- Kotlin 1.4.30 -> 1.5.21
+- Gradle 6.8.3 -> 7.1.1
+
 ## [2.0] (2021-05-01)
 
 ### ReactiveMap refactored
@@ -156,6 +163,6 @@ You should use `mutableMap` and `mutableList` for mutable versions of collection
 Public release
 
 [unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v2.0...main
-[2.0-rc1]: https://github.com/RedMadRobot/mapmemory/compare/v2.0-rc1..v2.0
+[2.0]: https://github.com/RedMadRobot/mapmemory/compare/v2.0-rc1..v2.0
 [2.0-rc1]: https://github.com/RedMadRobot/mapmemory/compare/v1.1...v2.0-rc1
 [1.1]: https://github.com/RedMadRobot/mapmemory/compare/v1.0...v1.1
