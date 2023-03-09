@@ -2,7 +2,7 @@
 
 ### Housekeeping
 
-- infrastructure 0.8.2 -> 0.11
+- infrastructure 0.8.2 -> 0.18
 - detekt 1.16.0 -> 1.17.1
 - Kotlin 1.4.30 -> 1.5.21
 - Gradle 6.8.3 -> 8.0.2
