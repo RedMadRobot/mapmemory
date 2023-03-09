@@ -7,6 +7,6 @@ plugins {
 description = "Workaround for bug in Kotlin compiler when use MapMemory with KAPT"
 
 dependencies {
-    api(project(":mapmemory"))
+    api(projects.mapmemory)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 }

@@ -6,6 +6,6 @@ plugins {
 description = "RxJava 3 accessors for MapMemory"
 
 dependencies {
-    api(project(":mapmemory"))
+    api(projects.mapmemory)
     api("io.reactivex.rxjava3:rxjava:3.0.11")
 }

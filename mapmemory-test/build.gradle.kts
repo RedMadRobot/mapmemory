@@ -6,7 +6,7 @@ plugins {
 description = "Utilities helping to test code that uses MapMemory"
 
 dependencies {
-    api(project(":mapmemory"))
+    api(projects.mapmemory)
 
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.assertj:assertj-core:3.19.0")

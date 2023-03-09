@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google()
@@ -11,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "mapmemory"
+rootProject.name = "mapmemory-root"
 
 include(
     "mapmemory",
