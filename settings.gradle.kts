@@ -5,6 +5,12 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
+    }
+}
+
 rootProject.name = "mapmemory"
 
 include(

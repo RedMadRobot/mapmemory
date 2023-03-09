@@ -1,6 +1,6 @@
 plugins {
-    id("com.redmadrobot.kotlin-library")
-    id("com.redmadrobot.publish")
+    id(libs.plugins.redmadrobot.kotlinLibrary)
+    id(libs.plugins.redmadrobot.publish)
 }
 
 description = "Simple in-memory cache conception built on Map"

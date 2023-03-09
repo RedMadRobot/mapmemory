@@ -1,6 +1,6 @@
 plugins {
-    id("com.redmadrobot.kotlin-library")
-    id("com.redmadrobot.publish")
+    id(libs.plugins.redmadrobot.kotlinLibrary)
+    id(libs.plugins.redmadrobot.publish)
 }
 
 description = "RxJava 3 accessors for MapMemory"

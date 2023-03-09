@@ -1,14 +1,14 @@
 import com.redmadrobot.build.dsl.*
 
 plugins {
-    id("com.redmadrobot.publish-config") version "0.18"
-    id("com.redmadrobot.detekt") version "0.18"
-    id("com.github.ben-manes.versions") version "0.36.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.5.0"
+    alias(libs.plugins.redmadrobot.publish.config)
+    alias(libs.plugins.redmadrobot.detekt)
+    alias(libs.plugins.versions)
+    alias(libs.plugins.binaryCompatibilityValidator)
     `maven-publish`
 
-    id("com.redmadrobot.kotlin-library") version "0.18" apply false
-    kotlin("jvm") version "1.8.10" apply false
+    alias(libs.plugins.redmadrobot.kotlinLibrary) apply false
+    alias(libs.plugins.kotlin) apply false
 }
 
 redmadrobot {

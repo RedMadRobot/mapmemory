@@ -1,0 +1,14 @@
+[versions]
+
+kotlin = "1.8.10"
+infrastructure = "0.18"
+
+[plugins]
+
+binaryCompatibilityValidator = "org.jetbrains.kotlinx.binary-compatibility-validator:0.13.0"
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+redmadrobot-detekt = { id = "com.redmadrobot.detekt", version.ref = "infrastructure" }
+redmadrobot-kotlinLibrary = { id = "com.redmadrobot.kotlin-library", version.ref = "infrastructure" }
+redmadrobot-publish = { id = "com.redmadrobot.publish", version.ref = "infrastructure" }
+redmadrobot-publish-config = { id = "com.redmadrobot.publish-config", version.ref = "infrastructure" }
+versions = "com.github.ben-manes.versions:0.46.0"
