@@ -28,6 +28,8 @@ public class ReactiveMutableMap<K, V>(
 
     private val map = map.toMutableMap()
     private val _flow = MutableSharedFlow<Map<K, V>>(replay = 1, onBufferOverflow = DROP_OLDEST)
+        // Emit initial map value
+        .apply { tryEmit(map.toMap()) }
 
     // @formatter:off
     @Synchronized override fun equals(other: Any?): Boolean = map == other

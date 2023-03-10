@@ -4,6 +4,10 @@
 
 - Added parameter `initialMap` to `MapMemory.reactiveMutableMap()` extension
 
+### Fixes
+
+- ReactiveMutableMap: initial empty map is not emitted (#15)
+
 ### Dependencies
 
 - **mapmemory:** Kotlin `1.4.30` → `1.8.10`
