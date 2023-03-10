@@ -1,10 +1,13 @@
 ## [Unreleased]
 
+### Dependencies
+
+- Kotlin `1.4.30` → `1.8.10`
+
 ### Housekeeping
 
 - infrastructure `0.8.2` → `0.18`
 - detekt `1.16.0` → `1.22.0`
-- Kotlin `1.4.30` → `1.5.21`
 - Gradle `6.8.3` → `8.0.2`
 - binary-compatibility-validator `0.5.0` → `0.13.0`
 

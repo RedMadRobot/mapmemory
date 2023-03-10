@@ -6,6 +6,8 @@ junit = "5.9.2"
 
 [libraries]
 
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
 kotest-assertions = "io.kotest:kotest-assertions-core:5.5.5"
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }

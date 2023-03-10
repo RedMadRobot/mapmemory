@@ -114,7 +114,7 @@ public open class MapMemory private constructor(
     }
 
     /** Extension point. Gives ability to create extensions on companion. */
-    public companion object;
+    public companion object
 }
 
 /** Delegate for memory properties. */
