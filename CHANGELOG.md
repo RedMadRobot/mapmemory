@@ -2,7 +2,9 @@
 
 ### Dependencies
 
-- Kotlin `1.4.30` → `1.8.10`
+- **mapmemory:** Kotlin `1.4.30` → `1.8.10`
+- **mapmemory-coroutines:** kotlinx.coroutines `1.4.2` → `1.6.4`
+- **mapmemory-rxjava3:** RxJava `3.0.11` → `3.1.6`
 
 ### Housekeeping
 

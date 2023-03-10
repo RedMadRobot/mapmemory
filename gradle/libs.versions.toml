@@ -7,6 +7,9 @@ junit = "5.9.2"
 [libraries]
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.21"
+rxjava3 = "io.reactivex.rxjava3:rxjava:3.1.6"
 
 kotest-assertions = "io.kotest:kotest-assertions-core:5.5.5"
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

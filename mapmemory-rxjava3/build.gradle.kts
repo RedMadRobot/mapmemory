@@ -7,5 +7,5 @@ description = "RxJava 3 accessors for MapMemory"
 
 dependencies {
     api(projects.mapmemory)
-    api("io.reactivex.rxjava3:rxjava:3.0.11")
+    api(libs.rxjava3)
 }
