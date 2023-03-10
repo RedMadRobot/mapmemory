@@ -38,6 +38,7 @@ subprojects {
     version = "2.1-SNAPSHOT"
 
     apply(plugin = "maven-publish")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 
     publishing {
         repositories {

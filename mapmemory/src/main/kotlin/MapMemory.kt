@@ -73,6 +73,7 @@ public open class MapMemory private constructor(
      * - returns `null` if [V] is nullable,
      * - throws [NoSuchElementException] if [V] is non-nullable.
      *
+     * @param V the value type.
      * @param thisRef the object for which the value is requested, used to get scoped property key.
      * @param property the metadata for the property, used to get the name of property and lookup
      * the value corresponding to this name in the memory.
@@ -86,6 +87,7 @@ public open class MapMemory private constructor(
      * Stores the value of the property for the given object in this memory map.
      * Removes value corresponding to the key if the provided [value] is `null`.
      *
+     * @param V the value type.
      * @param thisRef the object for which the value is requested, used to get scoped property key.
      * @param property the metadata for the property, used to get the name of property and lookup
      * the value corresponding to this name in the memory.
