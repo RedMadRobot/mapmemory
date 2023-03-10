@@ -1,7 +1,7 @@
 package com.redmadrobot.mapmemory
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.entry
+import io.kotest.matchers.maps.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlin.test.Test
 
 internal class SharedMapMemoryPropertyTest {
@@ -18,8 +18,7 @@ internal class SharedMapMemoryPropertyTest {
         classA.sharedValueA = 42
 
         // Then
-        assertThat(memory)
-            .containsExactly(entry("value", 42))
+        memory shouldContainExactly mapOf("value" to 42)
     }
 
     @Test
@@ -32,7 +31,7 @@ internal class SharedMapMemoryPropertyTest {
         classA.sharedValueA = 42
 
         // Then
-        assertThat(classB.sharedValueB).isEqualTo(42)
+        classB.sharedValueB shouldBe 42
     }
 
     @Test
@@ -42,11 +41,11 @@ internal class SharedMapMemoryPropertyTest {
         val classA = ClassA(memory)
 
         // When
-        assertThat(sharedValue).isEqualTo(0)
+        sharedValue shouldBe 0
         classA.sharedValueA += 1
 
         // Then
-        assertThat(classA.sharedValueA).isEqualTo(1)
+        classA.sharedValueA shouldBe 1
     }
 }
 

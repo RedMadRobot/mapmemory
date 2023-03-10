@@ -103,7 +103,7 @@ public val <K, V> ReactiveMutableMap<K, V>.valuesFlow: Flow<Collection<V>>
  * Flow emits new value when value corresponding to the given key is changed in the map.
  *
  * If value is not present in this map (or was removed), `null` will be emitted.
- * You can use [getValueFlow] if don't want `null` to be emitted when value not found in the map.
+ * You can use [getValueFlow] if you don't want `null` to be emitted when value not found in the map.
  *
  * @see Map.get
  * @see getValueFlow
@@ -119,7 +119,7 @@ public fun <K, V> ReactiveMutableMap<K, V>.getFlow(key: K): Flow<V?> {
  * Flow emits new value when value corresponding to the given key is changed in the map.
  *
  * If value is not present in this map (or was removed), nothing will be emitted.
- * You can use [getFlow] if want `null` to be emitted in this case.
+ * You can use [getFlow] if you want `null` to be emitted in this case.
  *
  * @see Map.getValue
  * @see getFlow

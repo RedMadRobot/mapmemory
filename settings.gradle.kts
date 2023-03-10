@@ -1,19 +1,19 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
     }
+}
 
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.namespace == "redmadrobot") {
-                useModule("com.redmadrobot.build:infrastructure:${requested.version}")
-            }
-        }
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
     }
 }
 
-rootProject.name = "mapmemory"
+rootProject.name = "mapmemory-root"
 
 include(
     "mapmemory",

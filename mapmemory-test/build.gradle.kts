@@ -1,15 +1,13 @@
 plugins {
-    id("redmadrobot.kotlin-library")
-    id("redmadrobot.publish")
+    id(libs.plugins.redmadrobot.kotlinLibrary)
+    id(libs.plugins.redmadrobot.publish)
 }
 
 description = "Utilities helping to test code that uses MapMemory"
 
 dependencies {
-    api(project(":mapmemory"))
+    api(projects.mapmemory)
 
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.assertj:assertj-core:3.19.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.test)
 }

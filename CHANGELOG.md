@@ -1,11 +1,17 @@
 ## [Unreleased]
 
+### Dependencies
+
+- **mapmemory:** Kotlin `1.4.30` → `1.8.10`
+- **mapmemory-coroutines:** kotlinx.coroutines `1.4.2` → `1.6.4`
+- **mapmemory-rxjava3:** RxJava `3.0.11` → `3.1.6`
+
 ### Housekeeping
 
-- infrastructure 0.8.2 -> 0.11
-- detekt 1.16.0 -> 1.17.1
-- Kotlin 1.4.30 -> 1.5.21
-- Gradle 6.8.3 -> 7.1.1
+- infrastructure `0.8.2` → `0.18`
+- detekt `1.16.0` → `1.22.0`
+- Gradle `6.8.3` → `8.0.2`
+- binary-compatibility-validator `0.5.0` → `0.13.0`
 
 ## [2.0] (2021-05-01)
 

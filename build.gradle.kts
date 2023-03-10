@@ -1,15 +1,19 @@
 import com.redmadrobot.build.dsl.*
 
 plugins {
-    id("redmadrobot.root-project") version "0.11"
-    id("com.github.ben-manes.versions") version "0.36.0"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.5.0"
+    alias(libs.plugins.redmadrobot.publish.config)
+    alias(libs.plugins.redmadrobot.detekt)
+    alias(libs.plugins.versions)
+    alias(libs.plugins.binaryCompatibilityValidator)
     `maven-publish`
+
+    alias(libs.plugins.redmadrobot.kotlinLibrary) apply false
+    alias(libs.plugins.kotlin) apply false
 }
 
-apply(plugin = "redmadrobot.detekt")
-
 redmadrobot {
+    jvmTarget.set(JavaVersion.VERSION_1_8)
+
     publishing {
         signArtifacts.set(!isRunningOnCi)
 
@@ -36,6 +40,7 @@ subprojects {
     version = "2.1-SNAPSHOT"
 
     apply(plugin = "maven-publish")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 
     publishing {
         repositories {
