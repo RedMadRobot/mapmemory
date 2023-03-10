@@ -8,5 +8,5 @@ description = "Workaround for bug in Kotlin compiler when use MapMemory with KAP
 
 dependencies {
     api(projects.mapmemory)
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }

@@ -2,6 +2,19 @@
 
 kotlin = "1.8.10"
 infrastructure = "0.18"
+junit = "5.9.2"
+
+[libraries]
+
+kotest-assertions = "io.kotest:kotest-assertions-core:5.5.5"
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+[bundles]
+
+test = ["kotlin-test", "junit-jupiter", "kotest-assertions"]
 
 [plugins]
 

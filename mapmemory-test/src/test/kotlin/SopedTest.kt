@@ -1,6 +1,6 @@
 package com.redmadrobot.mapmemory
 
-import org.assertj.core.api.Assertions.assertThat
+import io.kotest.matchers.shouldBe
 import kotlin.test.Test
 
 class ScopedTest {
@@ -11,7 +11,7 @@ class ScopedTest {
         val key = scopedKeyOf<Foo>("memoizedValue")
 
         // Then
-        assertThat(key).isEqualTo("com.redmadrobot.mapmemory.Foo#memoizedValue")
+        key shouldBe "com.redmadrobot.mapmemory.Foo#memoizedValue"
     }
 
     @Test
@@ -20,7 +20,7 @@ class ScopedTest {
         val key = scopedKeyOf(Foo::memoizedValue)
 
         // Then
-        assertThat(key).isEqualTo("com.redmadrobot.mapmemory.Foo#memoizedValue")
+        key shouldBe "com.redmadrobot.mapmemory.Foo#memoizedValue"
     }
 }
 

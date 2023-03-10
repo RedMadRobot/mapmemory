@@ -1,7 +1,6 @@
 package com.redmadrobot.mapmemory
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.entry
+import io.kotest.matchers.maps.shouldContainExactly
 import kotlin.test.Test
 
 internal class MapMemoryAccessorsTest {
@@ -18,8 +17,7 @@ internal class MapMemoryAccessorsTest {
         touch(fieldWithDefault)
 
         // Then
-        assertThat(memory)
-            .containsExactly(entry("fieldWithDefault", "Default"))
+        memory shouldContainExactly mapOf("fieldWithDefault" to "Default")
     }
 
     @Suppress("UNUSED_PARAMETER")
