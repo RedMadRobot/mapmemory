@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Changes
+
+- Added parameter `initialMap` to `MapMemory.reactiveMutableMap()` extension
+
 ### Dependencies
 
 - **mapmemory:** Kotlin `1.4.30` → `1.8.10`
