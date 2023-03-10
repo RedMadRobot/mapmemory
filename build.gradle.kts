@@ -12,6 +12,8 @@ plugins {
 }
 
 redmadrobot {
+    jvmTarget.set(JavaVersion.VERSION_1_8)
+
     publishing {
         signArtifacts.set(!isRunningOnCi)
 
