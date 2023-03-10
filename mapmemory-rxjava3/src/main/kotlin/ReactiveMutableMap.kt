@@ -8,13 +8,14 @@ import io.reactivex.rxjava3.subjects.Subject
 
 /**
  * Creates a delegate for dealing with [ReactiveMutableMap] stored in [MapMemory].
- * The delegate returns (and stores) empty `ReactiveMap` with specified [strategy]
- * if there is no corresponding value in memory.
+ * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside and specified
+ * [strategy] if there is no corresponding value in memory.
  */
 public fun <K, V : Any> MapMemory.reactiveMutableMap(
+    initialMap: Map<K, V> = emptyMap(),
     strategy: ReactiveMutableMap.ReplayStrategy = ReactiveMutableMap.ReplayStrategy.REPLAY_LAST,
 ): MapMemoryProperty<ReactiveMutableMap<K, V>> {
-    return invoke { ReactiveMutableMap(strategy = strategy) }
+    return invoke { ReactiveMutableMap(initialMap, strategy) }
 }
 
 /**
@@ -33,8 +34,8 @@ public class ReactiveMutableMap<K, V : Any>(
     private val map = map.toMutableMap()
     private val subject: Subject<Map<K, V>> = when (strategy) {
         ReplayStrategy.NO_REPLAY -> PublishSubject.create()
-        ReplayStrategy.REPLAY_LAST -> BehaviorSubject.createDefault(map)
-        ReplayStrategy.REPLAY_ALL -> ReplaySubject.create()
+        ReplayStrategy.REPLAY_LAST -> BehaviorSubject.createDefault(map.toMap())
+        ReplayStrategy.REPLAY_ALL -> ReplaySubject.create<Map<K, V>>().apply { onNext(map.toMap()) }
     }
 
     // @formatter:off

@@ -5,10 +5,13 @@ import kotlinx.coroutines.flow.*
 
 /**
  * Creates a delegate for dealing with [ReactiveMutableMap] stored in [MapMemory].
- * The delegate returns (and stores) empty `ReactiveMutableMap` if there is no corresponding value in memory.
+ * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside
+ * if there is no corresponding value in memory.
  */
-public fun <K, V> MapMemory.reactiveMutableMap(): MapMemoryProperty<ReactiveMutableMap<K, V>> {
-    return invoke { ReactiveMutableMap() }
+public fun <K, V> MapMemory.reactiveMutableMap(
+    initialMap: Map<K, V> = emptyMap(),
+): MapMemoryProperty<ReactiveMutableMap<K, V>> {
+    return invoke { ReactiveMutableMap(initialMap) }
 }
 
 /**
@@ -25,6 +28,8 @@ public class ReactiveMutableMap<K, V>(
 
     private val map = map.toMutableMap()
     private val _flow = MutableSharedFlow<Map<K, V>>(replay = 1, onBufferOverflow = DROP_OLDEST)
+        // Emit initial map value
+        .apply { tryEmit(map.toMap()) }
 
     // @formatter:off
     @Synchronized override fun equals(other: Any?): Boolean = map == other
