@@ -13,14 +13,14 @@ import kotlin.reflect.KProperty
  * Memory responsibility is to hold data.
  * MapMemory is conception of memory built on top of [MutableMap].
  *
- * ### Access to memory values
+ * ### Access `MapMemory` values
  *
- * Memory values can be accessed via delegates:
+ * `MapMemory` values can be accessed via delegates:
  * ```
  * package com.example
  *
  * class TokenStorage(memory: MapMemory) {
- *     var authToken: String by memory // Used delegate for field declaration
+ *     var authToken: String by memory // Use delegate for field declaration
  * }
  *
  * val memory = MapMemory()
@@ -28,19 +28,19 @@ import kotlin.reflect.KProperty
  * storage.authToken = "[TOKEN_HERE]"
  * println(memory) // {com.example.TokenStorage#authToken: [TOKEN_HERE]}
  * ```
- * There are a number of delegates to store collections in memory:
+ * There are number of delegates to store collections in `MapMemory`:
  * [map], [mutableMap], [list], [mutableList].
  *
  * You can specify default value using operator [invoke].
- * Default value will used if you're trying to read property before it was written.
+ * Default value will be used if you're trying to read property before it was written.
  * ```
  * var counter: Int by memory { 0 }
  * ```
  *
  * ### Scoped and shared values
  *
- * Delegate accesses memory values by key retrieved from property name.
- * There are two types of memory property delegates:
+ * Delegate accesses `MapMemory` values by key retrieved from property name.
+ * There are two types of `MapMemory` property delegates:
  * - **Scoped** to the class where the property is declared.
  *   Property key is combination of class and property name: `com.example.TokenStorage#authToken`
  * - **Shared** between all classes by the specified key.
@@ -57,7 +57,7 @@ public open class MapMemory private constructor(
     public constructor(map: Map<String, Any>) : this(ConcurrentHashMap(map))
 
     /**
-     * Returns property delegate that will initialize memory record with the value
+     * Returns property delegate that will initialize `MapMemory` record with the value
      * provided by [defaultValue] if it is not initialized yet.
      * ```
      * var counter: Int by memory { 0 }
@@ -68,15 +68,15 @@ public open class MapMemory private constructor(
     ): MapMemoryProperty<V> = getOrPutProperty(defaultValue)
 
     /**
-     * Returns the value of the property for the given object from this memory map.
-     * If property is not found in the memory and there no default value provided (see [invoke]):
+     * Returns the value of the property for the given object from this `MapMemory`.
+     * If property is not found in the `MapMemory` and there no default value provided (see [invoke]):
      * - returns `null` if [V] is nullable,
      * - throws [NoSuchElementException] if [V] is non-nullable.
      *
      * @param V the value type.
      * @param thisRef the object for which the value is requested, used to get scoped property key.
      * @param property the metadata for the property, used to get the name of property and lookup
-     * the value corresponding to this name in the memory.
+     * the value corresponding to this name in the `MapMemory`.
      * @return the property value.
      */
     public inline operator fun <reified V> getValue(thisRef: Any?, property: KProperty<*>): V {
@@ -84,13 +84,13 @@ public open class MapMemory private constructor(
     }
 
     /**
-     * Stores the value of the property for the given object in this memory map.
+     * Stores the value of the property for the given object in this `MapMemory`.
      * Removes value corresponding to the key if the provided [value] is `null`.
      *
      * @param V the value type.
      * @param thisRef the object for which the value is requested, used to get scoped property key.
      * @param property the metadata for the property, used to get the name of property and lookup
-     * the value corresponding to this name in the memory.
+     * the value corresponding to this name in the `MapMemory`.
      * @param value the value to set.
      */
     @Suppress("NOTHING_TO_INLINE")
@@ -99,15 +99,15 @@ public open class MapMemory private constructor(
     }
 
     /**
-     * Kotlin's [withDefault][kotlin.collections.withDefault] is not compatible with MapMemory
+     * Kotlin's [withDefault][kotlin.collections.withDefault] is not compatible with `MapMemory`,
      * so it is banned from use.
-     * Use operator [invoke] when you want to put default value to memory if there no value
+     * Use operator [invoke] if you want to put default value to `MapMemory` if there is no value
      * corresponding to the property key.
      * @see invoke
      */
     @Deprecated(
         level = DeprecationLevel.ERROR,
-        message = "Use operator 'invoke' to get memory property with default value",
+        message = "Use operator 'invoke' to get MapMemory property with default value",
         replaceWith = ReplaceWith("this(defaultValue)"),
     )
     @Suppress("UNUSED_PARAMETER")
@@ -119,7 +119,7 @@ public open class MapMemory private constructor(
     public companion object
 }
 
-/** Delegate for memory properties. */
+/** Delegate for [MapMemory] properties. */
 public abstract class MapMemoryProperty<V> @PublishedApi internal constructor() : ReadWriteProperty<Any?, V> {
     override fun getValue(thisRef: Any?, property: KProperty<*>): V = getValue(keyOf(thisRef, property))
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {

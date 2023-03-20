@@ -2,7 +2,7 @@ package com.redmadrobot.mapmemory
 
 /**
  * Returns a new [MapMemory] with the specified content give as list of pairs.
- * You can use it in conjunction with [scopedKeyOf] to build mock memory:
+ * You can use it in conjunction with [scopedKeyOf] to build mock `MapMemory`:
  * ```
  * class MemoryConsumer(memory: MapMemory) {
  *     var someMemoryValue: String by memory

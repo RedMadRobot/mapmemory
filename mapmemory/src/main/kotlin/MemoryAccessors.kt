@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Creates a delegate for dealing with [Map] stored in [MapMemory].
- * The delegate returns (and stores) empty map if there is no corresponding value in memory.
+ * The delegate returns (and stores) empty map if there is no corresponding value in `MapMemory`.
  */
 public fun <K, V> MapMemory.map(): MapMemoryProperty<Map<K, V>> {
     return invoke { emptyMap() }
@@ -15,7 +15,7 @@ public fun <K, V> MapMemory.map(): MapMemoryProperty<Map<K, V>> {
 
 /**
  * Creates a delegate for dealing with [MutableMap] stored in [MapMemory].
- * The delegate returns (and stores) empty map if there is no corresponding value in memory.
+ * The delegate returns (and stores) empty map if there is no corresponding value in `MapMemory`.
  * Uses [ConcurrentHashMap] implementation.
  */
 public fun <K, V> MapMemory.mutableMap(): MapMemoryProperty<MutableMap<K, V>> {
@@ -24,7 +24,7 @@ public fun <K, V> MapMemory.mutableMap(): MapMemoryProperty<MutableMap<K, V>> {
 
 /**
  * Creates a delegate for dealing with [List] stored in [MapMemory].
- * The delegate returns (and stores) empty list if there is no corresponding value in memory.
+ * The delegate returns (and stores) empty list if there is no corresponding value in `MapMemory`.
  */
 public fun <T> MapMemory.list(): MapMemoryProperty<List<T>> {
     return invoke { emptyList() }
@@ -32,7 +32,7 @@ public fun <T> MapMemory.list(): MapMemoryProperty<List<T>> {
 
 /**
  * Creates a delegate for dealing with [MutableList] stored in [MapMemory].
- * The delegate returns (and stores) empty list if there is no corresponding value in memory.
+ * The delegate returns (and stores) empty list if there is no corresponding value in `MapMemory`.
  * Uses synchronized list implementation.
  */
 public fun <T> MapMemory.mutableList(): MapMemoryProperty<MutableList<T>> {
@@ -41,7 +41,7 @@ public fun <T> MapMemory.mutableList(): MapMemoryProperty<MutableList<T>> {
 
 /**
  * Creates a delegate for dealing with nullable values stored in [MapMemory].
- * The delegate returns `null` if there is no corresponding value in memory.
+ * The delegate returns `null` if there is no corresponding value in `MapMemory`.
  */
 @Deprecated(
     message = "This accessor is not needed anymore",

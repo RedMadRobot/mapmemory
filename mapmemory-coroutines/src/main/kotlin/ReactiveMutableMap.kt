@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.*
 /**
  * Creates a delegate for dealing with [ReactiveMutableMap] stored in [MapMemory].
  * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside
- * if there is no corresponding value in memory.
+ * if there is no corresponding value in `MapMemory`.
  */
 public fun <K, V> MapMemory.reactiveMutableMap(
     initialMap: Map<K, V> = emptyMap(),

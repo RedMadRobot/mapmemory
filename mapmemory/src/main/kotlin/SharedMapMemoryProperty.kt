@@ -5,7 +5,7 @@ import com.redmadrobot.mapmemory.internal.putNotNull
 import kotlin.reflect.KProperty
 
 /**
- * Returns property delegate to access shared value in memory associated with the given [key].
+ * Returns property delegate to access shared value in [MapMemory] associated with the given [key].
  * ```
  * var host: String by memory.shared("selectedServer")
  * ```
@@ -18,7 +18,7 @@ public inline fun <reified T> MapMemory.shared(key: String): MapMemoryProperty<T
 }
 
 /**
- * Makes property delegate shared to access value in memory associated with the given [key].
+ * Makes property delegate shared to access value in [MapMemory] associated with the given [key].
  * ```
  * var answer: Int by memory { 42 }.shared("ultimateAnswer")
  * ```
