@@ -18,10 +18,12 @@ public class com/redmadrobot/mapmemory/MapMemory : java/util/Map, kotlin/jvm/int
 	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun put (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun putAll (Ljava/util/Map;)V
+	public final fun putReusable (Ljava/lang/String;Lcom/redmadrobot/mapmemory/internal/ClearableValue;)V
 	public final fun remove (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun remove (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
 	public final fun size ()I
+	public final fun updateReusable (Ljava/lang/String;Ljava/lang/Object;)V
 	public final fun values ()Ljava/util/Collection;
 	public final fun withDefault (Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
 }

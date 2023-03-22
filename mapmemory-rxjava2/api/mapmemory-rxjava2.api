@@ -1,5 +1,7 @@
 public final class com/redmadrobot/mapmemory/ReactiveMutableMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
 	public fun <init> ()V
+	public fun <init> (Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)V
 	public synthetic fun <init> (Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun change (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
@@ -42,8 +44,9 @@ public final class com/redmadrobot/mapmemory/ReactiveMutableMapKt {
 	public static final fun getValuesObservable (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;)Lio/reactivex/Observable;
 	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 	public static synthetic fun reactiveMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 }
 
 public final class com/redmadrobot/mapmemory/RxAccessorsKt {
