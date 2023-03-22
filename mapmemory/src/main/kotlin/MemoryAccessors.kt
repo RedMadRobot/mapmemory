@@ -19,7 +19,7 @@ public fun <K, V> MapMemory.map(): MapMemoryProperty<Map<K, V>> {
  * Uses [ConcurrentHashMap] implementation.
  */
 public fun <K, V> MapMemory.mutableMap(): MapMemoryProperty<MutableMap<K, V>> {
-    return invoke { ConcurrentHashMap<K, V>() }
+    return invoke(clear = { it.clear() }) { ConcurrentHashMap<K, V>() }
 }
 
 /**
@@ -36,7 +36,7 @@ public fun <T> MapMemory.list(): MapMemoryProperty<List<T>> {
  * Uses synchronized list implementation.
  */
 public fun <T> MapMemory.mutableList(): MapMemoryProperty<MutableList<T>> {
-    return invoke { Collections.synchronizedList(mutableListOf()) }
+    return invoke(clear = { it.clear() }) { Collections.synchronizedList(mutableListOf()) }
 }
 
 /**
