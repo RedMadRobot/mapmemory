@@ -3,6 +3,7 @@
 package com.redmadrobot.mapmemory
 
 import app.cash.turbine.test
+import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -21,5 +22,21 @@ class ReactiveMutableMapTest {
         map.flow.test {
             awaitItem() shouldBe initialMap
         }
+    }
+
+    @Test
+    fun `when cleared memory containing reactive map - should keep the same map and set default value`() {
+        val initialMap = mapOf("initial" to 42)
+
+        val map by memory.reactiveMutableMap(initialMap)
+
+        // Keep the original reference to the map
+        val originalMap = map
+        map["some_value"] = 1
+
+        memory.clear()
+
+        map shouldBe originalMap
+        map shouldContainExactly initialMap
     }
 }

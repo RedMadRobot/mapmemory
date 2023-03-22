@@ -17,6 +17,8 @@ public fun <K, V> MapMemory.map(): MapMemoryProperty<Map<K, V>> {
  * Creates a delegate for dealing with [MutableMap] stored in [MapMemory].
  * The delegate returns (and stores) empty map if there is no corresponding value in `MapMemory`.
  * Uses [ConcurrentHashMap] implementation.
+ *
+ * The property is _reusable_.
  */
 public fun <K, V> MapMemory.mutableMap(): MapMemoryProperty<MutableMap<K, V>> {
     return invoke(clear = { it.clear() }) { ConcurrentHashMap<K, V>() }
@@ -34,6 +36,8 @@ public fun <T> MapMemory.list(): MapMemoryProperty<List<T>> {
  * Creates a delegate for dealing with [MutableList] stored in [MapMemory].
  * The delegate returns (and stores) empty list if there is no corresponding value in `MapMemory`.
  * Uses synchronized list implementation.
+ *
+ * The property is _reusable_.
  */
 public fun <T> MapMemory.mutableList(): MapMemoryProperty<MutableList<T>> {
     return invoke(clear = { it.clear() }) { Collections.synchronizedList(mutableListOf()) }
