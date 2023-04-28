@@ -18,7 +18,7 @@
 
 - infrastructure `0.8.2` → `0.18`
 - detekt `1.16.0` → `1.22.0`
-- Gradle `6.8.3` → `8.0.2`
+- Gradle `6.8.3` → `8.1.1`
 - binary-compatibility-validator `0.5.0` → `0.13.0`
 
 ## [2.0] (2021-05-01)
