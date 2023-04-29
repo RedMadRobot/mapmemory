@@ -10,16 +10,16 @@
 
 ### Dependencies
 
-- **mapmemory:** Kotlin `1.4.30` → `1.8.10`
+- **mapmemory:** Kotlin `1.4.30` → `1.8.20`
 - **mapmemory-coroutines:** kotlinx.coroutines `1.4.2` → `1.6.4`
 - **mapmemory-rxjava3:** RxJava `3.0.11` → `3.1.6`
 
 ### Housekeeping
 
-- infrastructure `0.8.2` → `0.18`
+- infrastructure `0.8.2` → `0.18.1`
 - detekt `1.16.0` → `1.22.0`
 - Gradle `6.8.3` → `8.1.1`
-- binary-compatibility-validator `0.5.0` → `0.13.0`
+- binary-compatibility-validator `0.5.0` → `0.13.1`
 
 ## [2.0] (2021-05-01)
 
