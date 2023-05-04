@@ -1,26 +1,28 @@
-// Public API
-@file:Suppress("unused")
-
 package com.redmadrobot.mapmemory
 
 import io.reactivex.Maybe
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.clear
 
 /**
  * Creates a delegate for dealing with [BehaviorSubject] stored in [MapMemory].
  * The delegate returns (and stores) new subject if there is no corresponding value in `MapMemory`.
+ *
+ * The property is _reusable_.
  */
 public fun <T : Any> MapMemory.behaviorSubject(): MapMemoryProperty<BehaviorSubject<T>> {
-    return invoke { BehaviorSubject.create() }
+    return invoke(clear = { it.clear() }) { BehaviorSubject.create() }
 }
 
 /**
  * Creates a delegate for dealing with [PublishSubject] stored in [MapMemory].
  * The delegate returns (and stores) new subject if there is no corresponding value in `MapMemory`.
+ *
+ * The property is _reusable_.
  */
 public fun <T : Any> MapMemory.publishSubject(): MapMemoryProperty<PublishSubject<T>> {
-    return invoke { PublishSubject.create() }
+    return invoke(clear = { /* no-op */ }) { PublishSubject.create() }
 }
 
 /**

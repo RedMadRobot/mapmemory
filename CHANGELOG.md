@@ -3,6 +3,8 @@
 ### Changes
 
 - Added parameter `initialMap` to `MapMemory.reactiveMutableMap()` extension
+- :warning: **mapmemory-rxjava:** `ReplayStrategy` was removed. Please let us know if this change affected
+  you: https://github.com/RedMadRobot/mapmemory/discussions/20
 
 ### Fixes
 
