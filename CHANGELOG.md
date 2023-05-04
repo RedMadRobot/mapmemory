@@ -1,5 +1,36 @@
 ## [Unreleased]
 
+### Reusable properties
+
+Reusable properties introduced to address the problem described in issue #14
+
+Reusable properties survive `MapMemory.clear()` call. It will not be removed from cache, but will be cleared instead. Reusable properties are especially useful for reactive types like `Flow`. You don't need to resubscribe to flow after MapMemory was cleared.
+
+```kotlin
+val flow by memory.sharedFlow<Int>()
+
+// Subscribe to flow
+flow.onEach(::println).launchIn(coroutineScope)
+// And then clear MapMemory
+memory.crear()
+
+// Emitted value will be printed because the flow
+// is the same as before memory clear
+flow.emit(1)
+```
+
+You can create reusable property using operator `invoke` with `clear` lambda:
+
+```kotlin
+class Counter {
+    fun reset() = { /*...*/ }
+}
+
+val counter: Counter by memory(clear = { it.reset() }) { Counter() }
+```
+
+Many of default accessors are already turned into reusable: `mutableList`, `mutableMap`, `reactiveMutableMap`, `stateFlow`, `sharedFlow`, `behaviorSubject`, `publishSubject`.
+
 ### Changes
 
 - Added parameter `initialMap` to `MapMemory.reactiveMutableMap()` extension

@@ -34,6 +34,25 @@ import kotlin.reflect.KProperty
  * var counter: Int by memory { 0 }
  * ```
  *
+ * ### Reusable properties
+ *
+ * If you want to keep the same value on [MapMemory.clear] and clear the value
+ * instead of removing, you can create reusable property. Such properties use
+ * the given `clear` lambda to clear the current value.
+ * ```
+ * class Counter {
+ *     fun reset() { /*...*/ }
+ * }
+ *
+ * val counter: Counter by memory(clear = { it.reset() }) { Counter() }
+ * ```
+ *
+ * Reusable properties are especially useful for reactive types like `Flow`
+ * because you don't need to re-subscribe to flow after MapMemory was cleared.
+ *
+ * Many of default accessors are already return reusable properties.
+ * See accessor's description to check if it returns reusable property.
+ *
  * ### Scoped and shared values
  *
  * Delegate accesses `MapMemory` values by key retrieved from property name.
@@ -73,7 +92,7 @@ public open class MapMemory private constructor(
      * the current value and reuse it instead of removing.
      * ```
      * class Counter {
-     *     fun reset()
+     *     fun reset() { /*...*/ }
      * }
      *
      * val counter: Counter by memory(clear = { it.reset() }) { Counter() }
