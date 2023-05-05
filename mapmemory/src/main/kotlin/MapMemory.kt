@@ -1,9 +1,6 @@
 package com.redmadrobot.mapmemory
 
-import com.redmadrobot.mapmemory.internal.getOrPutProperty
-import com.redmadrobot.mapmemory.internal.getWithNullabilityInference
-import com.redmadrobot.mapmemory.internal.keyOf
-import com.redmadrobot.mapmemory.internal.putNotNull
+import com.redmadrobot.mapmemory.internal.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -37,6 +34,25 @@ import kotlin.reflect.KProperty
  * var counter: Int by memory { 0 }
  * ```
  *
+ * ### Reusable properties
+ *
+ * If you want to keep the same value on [MapMemory.clear] and clear the value
+ * instead of removing, you can create reusable property. Such properties use
+ * the given `clear` lambda to clear the current value.
+ * ```
+ * class Counter {
+ *     fun reset() { /*...*/ }
+ * }
+ *
+ * val counter: Counter by memory(clear = { it.reset() }) { Counter() }
+ * ```
+ *
+ * Reusable properties are especially useful for reactive types like `Flow`
+ * because you don't need to re-subscribe to flow after MapMemory was cleared.
+ *
+ * Many of default accessors are already return reusable properties.
+ * See accessor's description to check if it returns reusable property.
+ *
  * ### Scoped and shared values
  *
  * Delegate accesses `MapMemory` values by key retrieved from property name.
@@ -47,8 +63,10 @@ import kotlin.reflect.KProperty
  *   All properties are scoped by default, you can share it with the function [shared].
  */
 public open class MapMemory private constructor(
-    map: ConcurrentHashMap<String, Any>,
+    private val map: ConcurrentHashMap<String, Any>,
 ) : MutableMap<String, Any> by map {
+
+    private val reusableValues: MutableMap<String, ClearableValue<out Any>> by lazy { ConcurrentHashMap() }
 
     /** Creates a new empty [MapMemory]. */
     public constructor() : this(ConcurrentHashMap())
@@ -66,6 +84,24 @@ public open class MapMemory private constructor(
     public inline operator fun <reified V : Any> invoke(
         crossinline defaultValue: () -> V,
     ): MapMemoryProperty<V> = getOrPutProperty(defaultValue)
+
+    /**
+     * Returns property delegate that will initialize `MapMemory` record with the value
+     * provided by [defaultValue] if it is not initialized yet.
+     * This property survives [MapMemory.clear]. The given [clear] method will be used to clear
+     * the current value and reuse it instead of removing.
+     * ```
+     * class Counter {
+     *     fun reset() { /*...*/ }
+     * }
+     *
+     * val counter: Counter by memory(clear = { it.reset() }) { Counter() }
+     * ```
+     */
+    public inline operator fun <reified V : Any> invoke(
+        noinline clear: (V) -> Unit,
+        crossinline defaultValue: () -> V,
+    ): MapMemoryProperty<V> = reusableGetOrPutProperty(clear, defaultValue)
 
     /**
      * Returns the value of the property for the given object from this `MapMemory`.
@@ -96,6 +132,24 @@ public open class MapMemory private constructor(
     @Suppress("NOTHING_TO_INLINE")
     public inline operator fun <V> setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         putNotNull(keyOf(thisRef, property), value)
+    }
+
+    @PublishedApi
+    internal fun <V : Any> putReusable(key: String, value: ClearableValue<V>) {
+        reusableValues[key] = value
+    }
+
+    @PublishedApi
+    internal fun <V : Any> updateReusable(key: String, value: V) {
+        reusableValues.computeIfPresent(key) { _, currentValue ->
+            @Suppress("UNCHECKED_CAST")
+            (currentValue as ClearableValue<V>).copy(value = value)
+        }
+    }
+
+    override fun clear() {
+        map.clear()
+        map.putAll(reusableValues.mapValues { (_, reusableValue) -> reusableValue.getCleared() })
     }
 
     /**

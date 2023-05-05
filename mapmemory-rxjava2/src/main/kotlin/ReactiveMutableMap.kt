@@ -2,20 +2,18 @@ package com.redmadrobot.mapmemory
 
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.ReplaySubject
-import io.reactivex.subjects.Subject
 
 /**
  * Creates a delegate for dealing with [ReactiveMutableMap] stored in [MapMemory].
- * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside and specified
- * [strategy] if there is no corresponding value in `MapMemory`.
+ * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside
+ * if there is no corresponding value in `MapMemory`.
+ *
+ * The property is _reusable_.
  */
 public fun <K, V : Any> MapMemory.reactiveMutableMap(
-    initialMap: Map<K, V>,
-    strategy: ReactiveMutableMap.ReplayStrategy = ReactiveMutableMap.ReplayStrategy.REPLAY_LAST,
+    initialMap: Map<K, V> = emptyMap(),
 ): MapMemoryProperty<ReactiveMutableMap<K, V>> {
-    return invoke { ReactiveMutableMap(initialMap, strategy) }
+    return invoke(clear = { it.replaceAll(initialMap) }) { ReactiveMutableMap(initialMap) }
 }
 
 /**
@@ -28,15 +26,20 @@ public fun <K, V : Any> MapMemory.reactiveMutableMap(
 @Suppress("TooManyFunctions")
 public class ReactiveMutableMap<K, V : Any>(
     map: Map<K, V> = emptyMap(),
-    strategy: ReplayStrategy = ReplayStrategy.REPLAY_LAST,
 ) : MutableMap<K, V> {
 
     private val map = map.toMutableMap()
-    private val subject: Subject<Map<K, V>> = when (strategy) {
-        ReplayStrategy.NO_REPLAY -> PublishSubject.create()
-        ReplayStrategy.REPLAY_LAST -> BehaviorSubject.createDefault(map.toMap())
-        ReplayStrategy.REPLAY_ALL -> ReplaySubject.create<Map<K, V>>().apply { onNext(map.toMap()) }
-    }
+    private val subject = BehaviorSubject.createDefault(map.toMap())
+
+    @Deprecated(
+        "Strategy is deprecated, REPLAY_LAST always used",
+        ReplaceWith(""),
+        DeprecationLevel.ERROR,
+    )
+    public constructor(
+        map: Map<K, V> = emptyMap(),
+        @Suppress("UNUSED_PARAMETER", "DEPRECATION") strategy: ReplayStrategy,
+    ) : this(map)
 
     // @formatter:off
     @Synchronized override fun equals(other: Any?): Boolean = map == other
@@ -74,7 +77,7 @@ public class ReactiveMutableMap<K, V : Any>(
      */
     @Deprecated(
         message = "Replaced with getValueObservable",
-        replaceWith = ReplaceWith("getValueObservable(key)")
+        replaceWith = ReplaceWith("getValueObservable(key)"),
     )
     public fun getStream(key: K): Observable<V> {
         return subject.flatMap { map ->
@@ -110,7 +113,12 @@ public class ReactiveMutableMap<K, V : Any>(
         }
     }
 
-    /** Values reply strategy. */
+    /**
+     * NOTE: All replay strategies was removed in favor of REPLAY_LAST behavior.
+     * If this change affects you, please provide your use-case here:
+     *  https://github.com/RedMadRobot/mapmemory/discussions/20
+     */
+    @Deprecated("All strategies except REPLAY_LAST are removed")
     public enum class ReplayStrategy {
         /** Subscriber will not receive values emitted before subscription. */
         NO_REPLAY,
@@ -153,12 +161,27 @@ public typealias ReactiveMap<T> = ReactiveMutableMap<String, T>
 
 /** @see reactiveMutableMap */
 @Deprecated(
-    message = "Replaced with reactiveMutableMap",
-    replaceWith = ReplaceWith("reactiveMutableMap<String, T>(strategy)"),
+    "Replaced with reactiveMutableMap",
+    ReplaceWith("reactiveMutableMap<String, T>()"),
 )
-@Suppress("Deprecation")
+@Suppress("Deprecation", "UNUSED_PARAMETER")
 public fun <T : Any> MapMemory.reactiveMap(
     strategy: ReactiveMutableMap.ReplayStrategy = ReactiveMutableMap.ReplayStrategy.REPLAY_LAST,
 ): MapMemoryProperty<ReactiveMap<T>> {
-    return invoke { ReactiveMap(strategy = strategy) }
+    return invoke { ReactiveMap() }
+}
+
+/**
+ * @see reactiveMutableMap
+ */
+@Deprecated(
+    "Use reactiveMutableMap without strategy, current behavior equals to REPLAY_LAST strategy",
+    ReplaceWith("reactiveMutableMap<K, V>()"),
+    DeprecationLevel.ERROR,
+)
+@Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER", "DEPRECATION")
+public fun <K, V : Any> MapMemory.reactiveMutableMap(
+    strategy: ReactiveMutableMap.ReplayStrategy,
+): MapMemoryProperty<ReactiveMutableMap<K, V>> {
+    error("Should not be called")
 }

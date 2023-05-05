@@ -10,15 +10,15 @@ Simple in-memory cache conception built on `Map`.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Installation](#installation)
 - [Conception](#conception)
 - [Usage](#usage)
   - [Collections](#collections)
+  - [Reusable properties](#reusable-properties)
   - [Scoped and Shared values](#scoped-and-shared-values)
   - [Reactive Style](#reactive-style)
 - [Advanced usage](#advanced-usage)
-  - [Memory Lifetime](#memory-lifetime)
+  - [MapMemory Lifetime](#mapmemory-lifetime)
   - [Testing](#testing)
 - [Migration Guide](#migration-guide)
   - [Upgrading from v1.1](#upgrading-from-v11)
@@ -131,6 +131,25 @@ Accessors `mutableList` and `mutableMap` use concurrent collections under the ho
 | `mutableList()` | Empty mutable list | Store values in list  |
 
 Feel free to create your accessors if needed.
+
+### Reusable properties
+
+If you want to keep the same value on [MapMemory.clear] and clear the value instead of removing, you can create reusable property. Such properties use the given `clear` lambda to clear the current value.
+
+```kotlin
+class Counter {
+    fun reset() { /*...*/
+    }
+}
+
+val counter: Counter by memory(clear = { it.reset() }) { Counter() }
+```
+
+Reusable properties are especially useful for reactive types like `Flow` because you don't need to re-subscribe to flow after MapMemory was cleared.
+
+> **Info**  
+> Many of default accessors are already return reusable properties.
+> See accessor's description to check if it returns reusable property.
 
 ### Scoped and Shared values
 
