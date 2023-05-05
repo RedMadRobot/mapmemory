@@ -5,15 +5,15 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 /**
  * Creates a delegate for dealing with [ReactiveMutableMap] stored in [MapMemory].
- * The delegate returns (and stores) `ReactiveMutableMap` with [initialMap] inside
+ * The delegate returns (and stores) `ReactiveMutableMap` with [defaultValue] inside
  * if there is no corresponding value in `MapMemory`.
  *
  * The property is _reusable_.
  */
 public fun <K, V : Any> MapMemory.reactiveMutableMap(
-    initialMap: Map<K, V> = emptyMap(),
+    defaultValue: () -> Map<K, V> = ::emptyMap,
 ): MapMemoryProperty<ReactiveMutableMap<K, V>> {
-    return invoke(clear = { it.replaceAll(initialMap) }) { ReactiveMutableMap(initialMap) }
+    return invoke(clear = { it.replaceAll(defaultValue()) }) { ReactiveMutableMap(defaultValue()) }
 }
 
 /**
