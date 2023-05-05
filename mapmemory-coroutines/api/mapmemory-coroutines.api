@@ -40,7 +40,7 @@ public final class com/redmadrobot/mapmemory/ReactiveMutableMapKt {
 	public static final fun getValueFlow (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;Ljava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun getValuesFlow (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Ljava/util/Map;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 }
 
