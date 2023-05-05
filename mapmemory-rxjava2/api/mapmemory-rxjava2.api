@@ -11,13 +11,10 @@ public final class com/redmadrobot/mapmemory/ReactiveMutableMap : java/util/Map,
 	public final fun entrySet ()Ljava/util/Set;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
-	public final fun getAll ()Ljava/util/List;
-	public final fun getAllStream ()Lio/reactivex/Observable;
 	public fun getEntries ()Ljava/util/Set;
 	public fun getKeys ()Ljava/util/Set;
 	public final fun getObservable ()Lio/reactivex/Observable;
 	public fun getSize ()I
-	public final fun getStream (Ljava/lang/Object;)Lio/reactivex/Observable;
 	public fun getValues ()Ljava/util/Collection;
 	public fun hashCode ()I
 	public fun isEmpty ()Z
@@ -42,8 +39,6 @@ public final class com/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy :
 public final class com/redmadrobot/mapmemory/ReactiveMutableMapKt {
 	public static final fun getValueObservable (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;Ljava/lang/Object;)Lio/reactivex/Observable;
 	public static final fun getValuesObservable (Lcom/redmadrobot/mapmemory/ReactiveMutableMap;)Lio/reactivex/Observable;
-	public static final fun reactiveMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static synthetic fun reactiveMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lcom/redmadrobot/mapmemory/ReactiveMutableMap$ReplayStrategy;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 	public static final fun reactiveMutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 	public static synthetic fun reactiveMutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
