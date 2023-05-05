@@ -385,6 +385,13 @@ memory.getScoped<UserStorage>("name")
 
 ### Upgrading from v1.1
 
+> **Note**  
+> To make upgrade to the latest version easier, you should:
+>
+> 1. Upgrade to v2.0
+> 2. Resolve all deprecations
+> 3. Upgrade to the latest version
+
 #### Potentially breaking changes
 
 **Collections accessors**

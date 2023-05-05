@@ -33,6 +33,7 @@ Many of default accessors are already turned into reusable: `mutableList`, `muta
 
 ### Changes
 
+- :warning: Deprecated functions removed: `MapMemory.nullable`, `MapMemory.reactiveMap`, `ReactiveMutableMap.getStream`, `ReactiveMutableMap.getAll`, `ReactiveMutableMap.getAllStream`
 - Added parameter `defaultValue` to most of reusable properties: `mutableList`, `mutableMap`, `reactiveMutableMap`, `behaviorSubject`.
 - :warning: **mapmemory-rxjava:** `ReplayStrategy` was removed. Please let us know if this change affected you: https://github.com/RedMadRobot/mapmemory/discussions/20
 
