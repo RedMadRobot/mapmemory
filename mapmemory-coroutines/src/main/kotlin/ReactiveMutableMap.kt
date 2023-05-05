@@ -63,27 +63,6 @@ public class ReactiveMutableMap<K, V>(
         }
     }
 
-    /** Returns a [Flow] for the value corresponding to the given [key]. */
-    @Deprecated(
-        message = "Replaced with getFlow",
-        replaceWith = ReplaceWith("getValueFlow(key)"),
-    )
-    public fun getStream(key: K): Flow<V> = getValueFlow(key)
-
-    /** Returns a [List] of all values in this map. */
-    @Deprecated(
-        message = "Use values field",
-        replaceWith = ReplaceWith("values.toList()"),
-    )
-    public fun getAll(): List<V> = values.toList()
-
-    /** Returns a [Flow] for a [List] of all values in this map. */
-    @Deprecated(
-        message = "Use valuesFlow field",
-        replaceWith = ReplaceWith("valuesFlow.map { it.toList() }"),
-    )
-    public fun getAllStream(): Flow<List<V>> = valuesFlow.map { it.toList() }
-
     /**
      * Synchronised modification of the map.
      *
@@ -136,21 +115,4 @@ public fun <K, V> ReactiveMutableMap<K, V>.getValueFlow(key: K): Flow<V> {
         .filter { key in it }
         .map { it.getValue(key) }
         .distinctUntilChanged()
-}
-
-/** @see ReactiveMutableMap */
-@Deprecated(
-    message = "Renamed to ReactiveMutableMap",
-    replaceWith = ReplaceWith("ReactiveMutableMap<String, T>"),
-)
-public typealias ReactiveMap<T> = ReactiveMutableMap<String, T>
-
-/** @see reactiveMutableMap */
-@Deprecated(
-    message = "Replaced with reactiveMutableMap",
-    replaceWith = ReplaceWith("reactiveMutableMap<String, T>()"),
-)
-@Suppress("Deprecation")
-public fun <T> MapMemory.reactiveMap(): MapMemoryProperty<ReactiveMap<T>> {
-    return invoke(clear = { it.clear() }) { ReactiveMap() }
 }

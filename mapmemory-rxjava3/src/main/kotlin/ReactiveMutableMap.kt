@@ -72,35 +72,6 @@ public class ReactiveMutableMap<K, V : Any>(
     }
 
     /**
-     * Returns an [Observable] for the value corresponding to the given [key] or `Observable.empty()`
-     * if such a key is not present in the map or is `null`.
-     */
-    @Deprecated(
-        message = "Replaced with getValueObservable",
-        replaceWith = ReplaceWith("getValueObservable(key)"),
-    )
-    public fun getStream(key: K): Observable<V> {
-        return subject.flatMap { map ->
-            val entity = map[key]
-            if (entity != null) Observable.just(entity) else Observable.empty()
-        }
-    }
-
-    /** Returns a [List] of all values in this map. */
-    @Deprecated(
-        message = "Use values field",
-        replaceWith = ReplaceWith("values.toList()"),
-    )
-    public fun getAll(): List<V> = values.toList()
-
-    /** Returns an [Observable] for a [List] of all values in this map. */
-    @Deprecated(
-        message = "Use valuesObservable field",
-        replaceWith = ReplaceWith("valuesObservable.map { it.toList() }"),
-    )
-    public fun getAllStream(): Observable<List<V>> = valuesObservable.map { it.toList() }
-
-    /**
      * Synchronised modification of the map.
      *
      * You shouldn't do time-consuming operations in block [transform] because access to the map
@@ -150,25 +121,6 @@ public fun <K, V : Any> ReactiveMutableMap<K, V>.getValueObservable(key: K): Obs
         val value = map[key]
         if (value != null) Observable.just(value) else Observable.empty()
     }.distinctUntilChanged()
-}
-
-/** @see ReactiveMutableMap */
-@Deprecated(
-    message = "Renamed to ReactiveMutableMap",
-    replaceWith = ReplaceWith("ReactiveMutableMap<String, T>"),
-)
-public typealias ReactiveMap<T> = ReactiveMutableMap<String, T>
-
-/** @see reactiveMutableMap */
-@Deprecated(
-    "Replaced with reactiveMutableMap",
-    ReplaceWith("reactiveMutableMap<String, T>()"),
-)
-@Suppress("Deprecation", "UNUSED_PARAMETER")
-public fun <T : Any> MapMemory.reactiveMap(
-    strategy: ReactiveMutableMap.ReplayStrategy = ReactiveMutableMap.ReplayStrategy.REPLAY_LAST,
-): MapMemoryProperty<ReactiveMap<T>> {
-    return invoke { ReactiveMap() }
 }
 
 /**

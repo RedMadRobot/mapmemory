@@ -1,7 +1,5 @@
 package com.redmadrobot.mapmemory
 
-import com.redmadrobot.mapmemory.internal.getWithNullabilityInference
-import com.redmadrobot.mapmemory.internal.putNotNull
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -61,19 +59,4 @@ public fun <T> MapMemory.mutableList(defaultValue: () -> List<T> = ::emptyList):
         },
         defaultValue = { Collections.synchronizedList(defaultValue().toMutableList()) },
     )
-}
-
-/**
- * Creates a delegate for dealing with nullable values stored in [MapMemory].
- * The delegate returns `null` if there is no corresponding value in `MapMemory`.
- */
-@Deprecated(
-    message = "This accessor is not needed anymore",
-    replaceWith = ReplaceWith("this"),
-)
-public inline fun <reified T : Any> MapMemory.nullable(): MapMemoryProperty<T?> {
-    return object : MapMemoryProperty<T?>() {
-        override fun getValue(key: String): T? = getWithNullabilityInference(key)
-        override fun setValue(key: String, value: T?) = putNotNull(key, value)
-    }
 }
