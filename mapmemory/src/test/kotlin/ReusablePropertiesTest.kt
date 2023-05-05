@@ -26,6 +26,21 @@ internal class ReusablePropertiesTest {
     }
 
     @Test
+    fun `when cleared memory containing mutable list - should keep the list and replace content with defaults`() {
+        val defaultList = listOf(0)
+        val list by memory.mutableList { defaultList }
+
+        // Keep the reference to the original list
+        val originalList = list
+        list += 1
+
+        memory.clear()
+
+        list shouldBe originalList
+        list.shouldContainExactly(defaultList)
+    }
+
+    @Test
     fun `when cleared memory containing mutable map - should keep the map and clear it`() {
         val map by memory.mutableMap<String, Int>()
 
@@ -38,6 +53,21 @@ internal class ReusablePropertiesTest {
 
         map shouldBe originalMap
         map shouldContainExactly mapOf("Answer" to 42)
+    }
+
+    @Test
+    fun `when cleared memory containing mutable map - should keep the map and replace content with defaults`() {
+        val defaultMap = mapOf("Answer" to 42)
+        val map by memory.mutableMap { defaultMap }
+
+        // Keep the reference to the original map
+        val originalMap = map
+        map["Zero"] = 0
+
+        memory.clear()
+
+        map shouldBe originalMap
+        map shouldContainExactly defaultMap
     }
 
     @Test
