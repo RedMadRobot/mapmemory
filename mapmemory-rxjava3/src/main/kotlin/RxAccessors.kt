@@ -16,6 +16,17 @@ public fun <T : Any> MapMemory.behaviorSubject(): MapMemoryProperty<BehaviorSubj
 }
 
 /**
+ * Creates a delegate for dealing with [BehaviorSubject] stored in [MapMemory].
+ * The delegate returns (and stores) new subject with [defaultValue] inside
+ * if there is no corresponding value in `MapMemory`.
+ *
+ * The property is _reusable_.
+ */
+public fun <T : Any> MapMemory.behaviorSubject(defaultValue: () -> T): MapMemoryProperty<BehaviorSubject<T>> {
+    return invoke(clear = { it.onNext(defaultValue()) }) { BehaviorSubject.createDefault(defaultValue()) }
+}
+
+/**
  * Creates a delegate for dealing with [PublishSubject] stored in [MapMemory].
  * The delegate returns (and stores) new subject if there is no corresponding value in `MapMemory`.
  *

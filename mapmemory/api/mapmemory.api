@@ -40,8 +40,10 @@ public abstract class com/redmadrobot/mapmemory/MapMemoryProperty : kotlin/prope
 public final class com/redmadrobot/mapmemory/MemoryAccessorsKt {
 	public static final fun list (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 	public static final fun map (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static final fun mutableList (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
-	public static final fun mutableMap (Lcom/redmadrobot/mapmemory/MapMemory;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun mutableList (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun mutableList$default (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static final fun mutableMap (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
+	public static synthetic fun mutableMap$default (Lcom/redmadrobot/mapmemory/MapMemory;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/redmadrobot/mapmemory/MapMemoryProperty;
 }
 
 public final class com/redmadrobot/mapmemory/SharedMapMemoryPropertyKt {

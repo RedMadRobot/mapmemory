@@ -17,7 +17,7 @@ class ReactiveMutableMapTest {
     fun `when map initialized - should emit initial value to flow first`() = runTest {
         val initialMap = mapOf("initial" to 42)
 
-        val map by memory.reactiveMutableMap(initialMap)
+        val map by memory.reactiveMutableMap { initialMap }
 
         map.flow.test {
             awaitItem() shouldBe initialMap
@@ -28,7 +28,7 @@ class ReactiveMutableMapTest {
     fun `when cleared memory containing reactive map - should keep the same map and set default value`() {
         val initialMap = mapOf("initial" to 42)
 
-        val map by memory.reactiveMutableMap(initialMap)
+        val map by memory.reactiveMutableMap { initialMap }
 
         // Keep the original reference to the map
         val originalMap = map
