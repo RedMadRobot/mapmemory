@@ -37,7 +37,7 @@ repositories {
 
 subprojects {
     group = "com.redmadrobot.mapmemory"
-    version = "2.1-SNAPSHOT"
+    version = "2.1"
 
     apply(plugin = "maven-publish")
     apply(plugin = "io.gitlab.arturbosch.detekt")

@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.1] (2023-05-06)
+
 ### Reusable properties
 
 Reusable properties introduced to address the problem described in issue #14
@@ -209,7 +211,8 @@ You should use `mutableMap` and `mutableList` for mutable versions of collection
 
 Public release
 
-[unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v2.0...main
+[unreleased]: https://github.com/RedMadRobot/mapmemory/compare/v2.1...main
+[2.1]: https://github.com/RedMadRobot/mapmemory/compare/v2.0...v2.1
 [2.0]: https://github.com/RedMadRobot/mapmemory/compare/v2.0-rc1..v2.0
 [2.0-rc1]: https://github.com/RedMadRobot/mapmemory/compare/v1.1...v2.0-rc1
 [1.1]: https://github.com/RedMadRobot/mapmemory/compare/v1.0...v1.1

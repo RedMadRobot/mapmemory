@@ -37,15 +37,15 @@ repositories {
 }
 
 dependencies {
-    implementation("com.redmadrobot.mapmemory:mapmemory:2.0")
+    implementation("com.redmadrobot.mapmemory:mapmemory:2.1")
 
-    // or if you want to work with memory in reactive style, add one of
-    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.0")
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.0")
-    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.0")
+    // or if you want to work with MapMemory in reactive style, add one of
+    implementation("com.redmadrobot.mapmemory:mapmemory-coroutines:2.1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava2:2.1")
+    implementation("com.redmadrobot.mapmemory:mapmemory-rxjava3:2.1")
 
     // if you want to test code that uses MapMemory
-    testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.0")
+    testImplementation("com.redmadrobot.mapmemory:mapmemory-test:2.1")
 }
 ```
 
@@ -318,6 +318,9 @@ Keep in mind that you should manually clear `SessionMemory` on logout.
 > :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
 #### KAPT: 'IllegalStateException: Couldn't find declaration file' on delegate with inline getValue operator
+
+> **Note**  
+> This bug was fixed in Kotlin 1.8.20. Consider to update Kotlin.
 
 There is the bug in Kotlin Compiler that affects MapMemory if you create subclasses - [KT-46317](https://youtrack.jetbrains.com/issue/KT-46317).
 You can use module `mapmemory-kapt-bug-workaround` as a workaround:
