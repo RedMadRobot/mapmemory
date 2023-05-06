@@ -1,7 +1,7 @@
 # MapMemory <GitHub path="RedMadRobot/mapmemory"/>
 
 [![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral]
-[![Build Status](https://img.shields.io/github/workflow/status/RedMadRobot/mapmemory/CI/main?style=flat-square)][ci]
+[![Build Status](https://img.shields.io/github/actions/workflow/status/RedMadRobot/mapmemory/main.yml?branch=main&style=flat-square)][ci]
 [![License](https://img.shields.io/github/license/RedMadRobot/mapmemory?style=flat-square)][license]
 
 Simple in-memory cache conception built on `Map`.
