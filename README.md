@@ -1,4 +1,4 @@
-# MapMemory <GitHub path="RedMadRobot/mapmemory"/>
+## MapMemory <GitHub path="RedMadRobot/mapmemory"/>
 
 [![Version](https://img.shields.io/maven-central/v/com.redmadrobot.mapmemory/mapmemory?style=flat-square)][mavenCentral]
 [![Build Status](https://img.shields.io/github/actions/workflow/status/RedMadRobot/mapmemory/main.yml?branch=main&style=flat-square)][ci]
@@ -27,7 +27,7 @@ Simple in-memory cache conception built on `Map`.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Installation
+### Installation
 
 Add dependencies:
 
@@ -49,9 +49,9 @@ dependencies {
 }
 ```
 
-## Conception
+### Conception
 
-Kotlin provides delegates to access values in map:
+Kotlin provides delegates to access values in a map:
 
 ```kotlin
 val map = mapOf("answer" to 42)
@@ -64,27 +64,31 @@ This library uses this idea to implement in-memory storage.
 There are two simple principles:
 
 - **MapMemory** is a singleton, and it is shared between many consumers
-- **MapMemory** holds data but not knows **what** data it holds
+- **MapMemory** holds data but doesn't know **what** data it holds
 
-## Usage
+### Usage
 
-> :memo: If you use any kind of DI framework, you should provide `MapMemory` with `Singleton` scope:
+>[!TIP]
+>
+>If you use any kind of DI framework, you should provide `MapMemory` with the desired scope.
+> For example, if you want your data to live forever, use singleton scope:
 >
 > ```kotlin
 > @Provides
 > @Singleton
 > fun provideMapMemory(): MapMemory = MapMemory()
 > ```
-> If you don't, you should create a single instance of `MapMemory` and use it everywhere.
+>
+> If you don't use any DI framework, you should take care of the `MapMemory` lifetime.
 
 Imagine, you have `UsersRepository` used to get users' information from API.
 You want to remember the last requested user.
-Let's store it into a `MapMemory`:
+Let's store it in a `MapMemory`:
 
 ```kotlin
 class UsersRepository(
     private val api: Api,
-    memory: MapMemory,              // (1) Inject MapMemory into constructor
+    memory: MapMemory,              // (1) Inject MapMemory into the constructor
 ) {
 
     var lastUser: User? by memory   // (2) Declare in-memory property using delegate
@@ -96,19 +100,20 @@ class UsersRepository(
     }
 }
 ```
+
 `MapMemory` is a singleton, but `UsersRepository` is not.
 Property `lastUser` is tied to `MapMemory` lifetime, so it will survive `UsersRepository` recreation.
 
-You can specify the default value that will be used when the value you're trying to read is not written yet.
-For example, we don't want nullable `User`, but want to get placeholder object `User.EMPTY` instead:
+You can specify the default value that will be used when the value you're trying to read is not set.
+For example, we don't want a nullable `User`, but want to get placeholder object `User.EMPTY` instead:
 
 ```kotlin
 var lastUser: User by memory { User.EMPTY }
 ```
 
-### Collections
+#### Collections
 
-You can write the following code to store mutable list in `MapMemory`:
+You can write the following code to store a mutable list in `MapMemory`:
 
 ```kotlin
 val users: MutableList<User> by memory { mutableListOf() }
@@ -132,9 +137,10 @@ Accessors `mutableList` and `mutableMap` use concurrent collections under the ho
 
 Feel free to create your accessors if needed.
 
-### Reusable properties
+#### Reusable properties
 
-If you want to keep the same value on [MapMemory.clear] and clear the value instead of removing, you can create reusable property. Such properties use the given `clear` lambda to clear the current value.
+If you don't want some value to be removed from memory on [MapMemory.clear] and want to clear the value instead, you can create a reusable property.
+Such properties use the given `clear` lambda to clear the current value.
 
 ```kotlin
 class Counter {
@@ -145,16 +151,17 @@ class Counter {
 val counter: Counter by memory(clear = { it.reset() }) { Counter() }
 ```
 
-Reusable properties are especially useful for reactive types like `Flow` because you don't need to re-subscribe to flow after MapMemory was cleared.
+Reusable properties are especially useful for reactive types like `Flow` because you don't need to re-subscribe to `Flow` after `MapMemory` is cleared.
 
-> **Info**  
-> Many of default accessors are already return reusable properties.
-> See accessor's description to check if it returns reusable property.
+> [!NOTE] 
+>
+> Many of the default accessors already return reusable properties.
+> See the accessor's description to check if it returns reusable property.
 
-### Scoped and Shared values
+#### Scoped and Shared values
 
 Let's look at how MapMemory works under the hood.
-We have a class with in-memory property declared with delegate:
+We have a class with an in-memory property declared using delegate:
 
 ```kotlin
 package com.example
@@ -165,10 +172,10 @@ class TokenStorage(memory: MapMemory) {
 ```
 
 `MapMemory` is `MutableMap<String, Any>`.
-Delegate accesses map value by key retrieved from property name.
+Delegate accesses map value by a key retrieved from the property name.
 This behavior differs for two types of in-memory property delegates:
 - **Scoped** to the class where the property is declared.
-  Property key is combination of class and property name: `com.example.TokenStorage#authToken`
+  Property key is a combination of class and property name: `com.example.TokenStorage#authToken`
 - **Shared** between all classes by the specified key.
   All properties are scoped by default, you can share it with the function `shared`.
 
@@ -190,12 +197,14 @@ class Authenticator(memory: MapMemory) {
 
 Both `TokenStorage` and `Authenticator` will use the same value.
 
-> :warning: Keep in mind that it is just an example.
-> In real code it may be more reasonable to inject `TokenStorage` into `Authenticator` instead of sharing in-memory property by key.
+> [!Warning]
+> 
+> Keep in mind that this is just an example.
+> In real code, it may be more reasonable to inject `TokenStorage` into `Authenticator` instead of sharing in-memory property by key.
 
-### Reactive Style
+#### Reactive Style
 
-Reactive subscription to values is useful to keep data on all screens up to date.
+Reactive subscription to values is useful to keep data shared between several screens up to date.
 
 To use MapMemory in reactive style, replace dependency `mapmemory` with one of the following:
 
@@ -213,13 +222,15 @@ val selectedOption: MutableStateFlow<Option> by memory.stateFlow(Option.DEFAULT)
 val selectedOption: BehaviorSubject<Option> by memory.behaviorSubject()
 ```
 
-> :warning: You can use only one of these dependencies at the same time
+> [!WARNING]
+>
+> You can use only one of these dependencies at the same time
 > Otherwise build will fail due to duplicates in the classpath.
 
 MapMemory provides the type `ReactiveMutableMap`.
-It works similar to `MutableMap` but enables you to observe data in a reactive manner.
+It works similarly to `MutableMap` but enables you to observe data reactively.
 There are methods to observe one or all map values.
-You can implement cache-first approach using `ReactiveMutableMap`:
+You can implement a cache-first approach using `ReactiveMutableMap`:
 
 <details open>
   <summary>Coroutines</summary>
@@ -273,9 +284,9 @@ You can implement cache-first approach using `ReactiveMutableMap`:
 
 </details>
 
-#### Coroutines
+##### Coroutines
 
-`mapmemory-coroutines` adds accessors for coroutines types:
+`mapmemory-coroutines` add accessors for coroutines types:
 
 | Accessor               | Default value                           | Description                      |
 |------------------------|-----------------------------------------|----------------------------------|
@@ -283,9 +294,11 @@ You can implement cache-first approach using `ReactiveMutableMap`:
 | `sharedFlow()`         | Empty flow                              | Store stream of values           |
 | `reactiveMutableMap()` | Empty map                               | Store values in **reactive map** |
 
-> :memo: Coroutines implementation of reactive map uses `SharedFlow` under the hood, so it will be triggered even if its content is not changed.
+> [!NOTE]
+>
+> Coroutines implementation of reactive map uses `SharedFlow` under the hood, so it will be triggered even if its content has not been changed.
 
-#### RxJava
+##### RxJava
 
 `mapmemory-rxjava2` and `mapmemory-rxjava3` adds accessors for RxJava types:
 
@@ -296,9 +309,9 @@ You can implement cache-first approach using `ReactiveMutableMap`:
 | `maybe()`              | `Maybe.empty()` | Reactive analog to store "nullable" |
 | `reactiveMutableMap()` | Empty map       | Store values in **reactive map**    |
 
-## Advanced usage
+### Advanced usage
 
-### MapMemory Lifetime
+#### MapMemory Lifetime
 
 It may be useful to create `MapMemory` instances with a different lifetime.
 You can use it to control the lifetime of the data stored within.
@@ -315,15 +328,16 @@ class AppMemory @Inject constructor() : MapMemory()
 
 Keep in mind that you should manually clear `SessionMemory` on logout.
 
-> :memo: Instead of creating subclasses, you can provide MapMemory with [qualifiers].
+> [!TIP]
+> Instead of creating subclasses, you can provide MapMemory with [qualifiers].
 
-#### KAPT: 'IllegalStateException: Couldn't find declaration file' on delegate with inline getValue operator
+##### KAPT: 'IllegalStateException: Couldn't find declaration file' on delegate with inline getValue operator
 
-> **Note**  
-> This bug was fixed in Kotlin 1.8.20. Consider to update Kotlin.
+> [!NOTE]
+> This bug was fixed in Kotlin 1.8.20. Consider updating to the newest Kotlin.
 
 There is the bug in Kotlin Compiler that affects MapMemory if you create subclasses - [KT-46317](https://youtrack.jetbrains.com/issue/KT-46317).
-You can use module `mapmemory-kapt-bug-workaround` as a workaround:
+You can use the module `mapmemory-kapt-bug-workaround` as a workaround:
 
 ```kotlin
 dependencies {
@@ -336,7 +350,7 @@ dependencies {
 + val someValue: String by memory.value()
 ```
 
-### Testing
+#### Testing
 
 Module `mapmemory-test` provides utilities helping to test code that uses MapMemory.
 
@@ -359,7 +373,7 @@ memory["com.example.UserCache#name"] = "John Doe"
 memory["com.example.UserCache#ages"] = 42
 ```
 
-It is easy to make mistake and this approach requires knowing how MapMemory work under the hood.
+It is easy to make a mistake and this approach requires knowing how MapMemory works under the hood.
 Using `mapMemoryOf` and `scopedKeyOf` you can build mock `MapMemory` much easier:
 
 ```kotlin
@@ -376,7 +390,7 @@ memory.putScoped(UserCache::name, "Jane Doe")
 memory.getScoped(UserCache::name)
 ```
 
-There are alternate syntax to use if properties in class are private and can't be accessed via reference:
+There is an alternate syntax to use if properties in class are private and can't be accessed via reference:
 
 ```kotlin
 scopedKeyOf<UserStorage>("name")
@@ -384,27 +398,27 @@ memory.putScoped<UserStorage>("name", "Jane Doe")
 memory.getScoped<UserStorage>("name")
 ```
 
-## Migration Guide
+### Migration Guide
 
-### Upgrading from v1.1
+#### Upgrading from v1.1
 
-> **Note**  
-> To make upgrade to the latest version easier, you should:
+> [!NOTE]  
+> To make an upgrade to the latest version easier, you should:
 >
 > 1. Upgrade to v2.0
 > 2. Resolve all deprecations
 > 3. Upgrade to the latest version
 
-#### Potentially breaking changes
+##### Potentially breaking changes
 
 **Collections accessors**
 
 Now accessors `map` and `list` return delegates to access immutable collections.
-You should use `mutableMap` and `mutableList` for mutable versions of collections.
+Use `mutableMap` and `mutableList` for mutable versions of collections.
 
 **Closed access to getOrPutProperty**
 
-Extension `getOrPutProperty` become internal (it already was in `internal` package), use operator `MapMemory.invoke` instead.
+Extension `getOrPutProperty` became internal (it was already in the `internal` package), use the operator `MapMemory.invoke` instead.
 
 ```diff
 -var counter: Int by memory.getOrPutProperty { 0 }
@@ -414,14 +428,14 @@ Extension `getOrPutProperty` become internal (it already was in `internal` packa
 **Scoped and Shared values**
 
 Read ["Scoped and Shared values"](#scoped-and-shared-values) section.
-If you are sharing properties between classes by name, you should make these properties shared.
+If you are sharing properties between classes by name, you should specify the sharing key explicitly.
 
-#### API Changes
+##### API Changes
 
 **Accessor `.nullable()` is deprecated**
 
 Accessor `nullable()` is not needed now.
-You can just declare a nullable field:
+You can simply declare a nullable field:
 
 ```diff
 -val selectedOption: String? by memory.nullable()
@@ -430,14 +444,14 @@ You can just declare a nullable field:
 
 **`.withDefault { ... }` is banned from use**
 
-`withDefault` is no more compatible with MapMemory, so you should use the operator `invoke` instead:
+`withDefault` is no longer compatible with MapMemory, so you should use the operator `invoke` instead:
 
 ```diff
 -var counter: Int by memory.withDefault { 0 }
 +var counter: Int by memory { 0 }
 ```
 
-#### ReactiveMap -> ReactiveMutableMap
+##### ReactiveMap -> ReactiveMutableMap
 
 ```diff
 -var users by memory.reactiveMap<User>()
@@ -446,7 +460,7 @@ You can just declare a nullable field:
 
 **Naming changes**
 
-Word `stream` in methods names replaced with implementation-specific words to make API clearer.
+The word `stream` in method names was replaced with implementation-specific words to clarify the API.
 
 Coroutines:
 - `getStream` -> `getFlow` and `getValueFlow`
@@ -456,7 +470,7 @@ RxJava:
 - `getStream` -> `getValueObservable`
 - `getAllStream` -> `valuesObservable`
 
-## Contributing
+### Contributing
 
 Merge requests are welcome.
 For major changes, please open an issue first to discuss what you would like to change.
